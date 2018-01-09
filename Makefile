@@ -3,7 +3,7 @@
 NAME := dform
 VERSION := 0.0.1
 REVISION := $(shell git describe --always)
-LDFLAGS := -ldflags="-s -w"
+LDFLAGS := -ldflags="-s -w -X \"main.Name=$(NAME)\" -X \"main.Version=$(VERSION)\" -X \"main.Revision=$(REVISION)\" -extldflags \"-static\""
 GO_TEST_FLAGS  := -v -p=1
 
 SRC_FILES := $(shell git ls-files | grep -E "\.go$$")

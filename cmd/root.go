@@ -8,41 +8,51 @@ import (
 	"github.com/spf13/viper"
 )
 
-const (
-	defaultConfigName = ".dform"
-)
-
-var (
-	cfgFile = ""
-	rootCmd = &cobra.Command{
-		Use:   "dform",
-		Short: "CLI tool to manage Dgraph schema",
-		Long:  "CLI tool to manage Dgraph schema",
-	}
-)
-
-// Execute executes the command.
-func Execute() int {
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		return -1
-	}
-	return 0
+type root struct {
+	*cobra.Command
+	viper                   *viper.Viper
+	name, version, revision string
+	cfgFile                 string
 }
 
-func init() {
-	cobra.OnInitialize(initConfig)
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", fmt.Sprintf("config file (default is $PWD/%s.toml)", defaultConfigName))
+// New creates a new command object
+func New(name, version, revision string) *cobra.Command {
+	rootCmd := &root{
+		Command: &cobra.Command{
+			Use:   name,
+			Short: "CLI tool to manage Dgraph schema",
+			Long:  "CLI tool to manage Dgraph schema",
+		},
+		viper:    viper.New(),
+		name:     name,
+		version:  version,
+		revision: revision,
+	}
+
+	cobra.OnInitialize(rootCmd.initConfig)
+
+	rootCmd.PersistentFlags().StringVar(
+		&rootCmd.cfgFile,
+		"config",
+		"",
+		fmt.Sprintf("config file (default is $PWD/%s.toml)", rootCmd.defaultConfigName()),
+	)
+
+	return rootCmd.Command
 }
 
-func initConfig() {
-	if cfgFile != "" {
-		viper.SetConfigFile(cfgFile)
+func (r *root) initConfig() {
+	if r.cfgFile != "" {
+		r.viper.SetConfigFile(r.cfgFile)
 	} else {
-		viper.AddConfigPath(".")
-		viper.SetConfigName(defaultConfigName)
+		r.viper.AddConfigPath(".")
+		r.viper.SetConfigName(r.defaultConfigName())
 	}
-	if err := viper.ReadInConfig(); err != nil {
-		log.Fatal(fmt.Errorf("failed to read config: %v", err))
+	if err := r.viper.ReadInConfig(); err != nil {
+		log.Println(fmt.Errorf("failed to read config: %v", err))
 	}
+}
+
+func (r *root) defaultConfigName() string {
+	return fmt.Sprintf(".%s", r.name)
 }
