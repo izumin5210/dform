@@ -37,6 +37,7 @@ func New(name, version, revision string) *cobra.Command {
 		"",
 		fmt.Sprintf("config file (default is $PWD/%s.toml)", rootCmd.defaultConfigName()),
 	)
+	rootCmd.AddCommand(rootCmd.newVersionCommand())
 
 	return rootCmd.Command
 }
