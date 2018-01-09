@@ -2,15 +2,24 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
-var rootCmd = &cobra.Command{
-	Use:   "dform",
-	Short: "CLI tool to manage Dgraph schema",
-	Long:  "CLI tool to manage Dgraph schema",
-}
+const (
+	defaultConfigName = ".dform"
+)
+
+var (
+	cfgFile = ""
+	rootCmd = &cobra.Command{
+		Use:   "dform",
+		Short: "CLI tool to manage Dgraph schema",
+		Long:  "CLI tool to manage Dgraph schema",
+	}
+)
 
 // Execute executes the command.
 func Execute() int {
@@ -23,7 +32,17 @@ func Execute() int {
 
 func init() {
 	cobra.OnInitialize(initConfig)
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", fmt.Sprintf("config file (default is $PWD/%s.toml)", defaultConfigName))
 }
 
 func initConfig() {
+	if cfgFile != "" {
+		viper.SetConfigFile(cfgFile)
+	} else {
+		viper.AddConfigPath(".")
+		viper.SetConfigName(defaultConfigName)
+	}
+	if err := viper.ReadInConfig(); err != nil {
+		log.Fatal(fmt.Errorf("failed to read config: %v", err))
+	}
 }
