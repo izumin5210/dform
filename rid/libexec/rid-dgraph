@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+
+set -eu
+set -o pipefail
+
+NAME=the-dgraph
+IMAGE="dgraph/dgraph:v1.0.1"
+PORT_HTTP=9901
+PORT_GRPC=9902
+
+
+#  Commands
+#-----------------------------------------------
+_ping() {
+  curl -LI localhost:$PORT_HTTP/health -o /dev/null -w '%{http_code}\n' -s | grep -q 200
+}
+
+server_start() {
+  echo "==> Starting server"
+  docker start $NAME 2>/dev/null || server_create
+
+  echo "==> Waiting for ready"
+  while true; do
+    sleep 5
+    if _ping; then
+      echo
+      echo "ready"
+      break
+    else
+      printf '.'
+    fi
+  done
+
+  echo "* HTTP: $PORT_HTTP"
+  echo "* gRPC: $PORT_GRPC"
+}
+
+server_create() {
+  echo "==> Creating container and Dgraph server"
+  docker run \
+    -p $PORT_HTTP:8080 \
+    -p $PORT_GRPC:9080 \
+    --name $NAME \
+    -v ~/docker/dgraph:/dgraph \
+    -d \
+    $IMAGE \
+    dgraph zero --port_offset=-2000
+
+  echo "==> Waiting for ready"
+  while true; do
+    sleep 5
+    if zero_start; then
+      echo
+      echo "ready"
+      break
+    else
+      printf '.'
+    fi
+  done
+}
+
+zero_start() {
+  echo "==> Starting Dgraph server"
+  docker exec \
+    -d \
+    $NAME \
+    dgraph server --bindall=true --memory_mb 2048 --zero localhost:5080
+}
+
+server_stop() {
+  echo "==> Stopping server"
+  docker stop $NAME
+}
+
+server_destory() {
+  echo "==> Destroying server"
+  docker rm $NAME
+}
+
+exec_logs() {
+  docker logs -f $NAME
+}
+
+exec_status() {
+  if docker ps | grep $NAME > /dev/null; then
+    if _ping; then
+      echo 'ready'
+    else
+      echo 'not ready'
+    fi
+  else
+    echo 'not running'
+  fi
+}
+
+
+#  Entrypoint
+#-----------------------------------------------
+COMMAND="${1:-}"
+shift || true
+
+case "$COMMAND" in
+  start)    server_start ;;
+  stop)     server_stop ;;
+  destroy)  server_destory ;;
+  status)   exec_status ;;
+  logs)     exec_logs ;;
+esac

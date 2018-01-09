@@ -1,0 +1,11 @@
+Run a portable Dgraph server
+
+Usage:
+    rid dgraph COMMAND
+
+Commands:
+    start
+    stop
+    destroy
+    status
+    logs
