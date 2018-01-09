@@ -3,9 +3,14 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+)
+
+const (
+	keyDgraphURL = "dgraph-url"
 )
 
 type root struct {
@@ -37,7 +42,10 @@ func New(name, version, revision string) *cobra.Command {
 		"",
 		fmt.Sprintf("config file (default is $PWD/%s.toml)", rootCmd.defaultConfigName()),
 	)
-	rootCmd.AddCommand(rootCmd.newVersionCommand())
+	rootCmd.AddCommand(
+		rootCmd.newExportCommand(),
+		rootCmd.newVersionCommand(),
+	)
 
 	return rootCmd.Command
 }
@@ -49,6 +57,10 @@ func (r *root) initConfig() {
 		r.viper.AddConfigPath(".")
 		r.viper.SetConfigName(r.defaultConfigName())
 	}
+
+	r.viper.BindEnv(keyDgraphURL)
+	r.viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
+
 	if err := r.viper.ReadInConfig(); err != nil {
 		log.Println(fmt.Errorf("failed to read config: %v", err))
 	}
@@ -56,4 +68,8 @@ func (r *root) initConfig() {
 
 func (r *root) defaultConfigName() string {
 	return fmt.Sprintf(".%s", r.name)
+}
+
+func (r *root) getDgraphURL() string {
+	return r.viper.GetString(keyDgraphURL)
 }
