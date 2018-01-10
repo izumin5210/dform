@@ -6,7 +6,14 @@ services:
     volumes:
       - ..:/app
       - vendor:/app/vendor
+    networks:
+      - the_dgraph
     command: tail -f /dev/null
+
 
 volumes:
   vendor:
+
+networks:
+  the_dgraph:
+    external: true
