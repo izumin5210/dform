@@ -2,10 +2,64 @@
 
 
 [[projects]]
+  branch = "master"
+  name = "github.com/AndreasBriese/bbloom"
+  packages = ["."]
+  revision = "28f7e881ca57bc00e028f9ede9f0d9104cfeef5e"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/beorn7/perks"
+  packages = ["quantile"]
+  revision = "4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9"
+
+[[projects]]
+  name = "github.com/blevesearch/bleve"
+  packages = ["analysis","analysis/analyzer/custom","analysis/lang/cjk","analysis/token/lowercase","analysis/token/porter","analysis/token/stop","analysis/token/unicodenorm","analysis/tokenizer/unicode","analysis/tokenmap","document","geo","index","index/store","numeric","registry","search","search/highlight"]
+  revision = "0456569b6240ce13fc7bfed00e10b3f99e68a3e2"
+  version = "v0.6.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/blevesearch/blevex"
+  packages = ["stemmer"]
+  revision = "016ee54839d3bf3b8ad7c624006cd275aa13234d"
+
+[[projects]]
+  name = "github.com/blevesearch/go-porterstemmer"
+  packages = ["."]
+  revision = "b4dd94e38f29620fe0f97ae4b0f6994b0d5d75f0"
+  version = "v1.0.1"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/blevesearch/segment"
+  packages = ["."]
+  revision = "762005e7a34fd909a84586299f1dd457371d36ee"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/codahale/hdrhistogram"
+  packages = ["."]
+  revision = "3a0bb77429bd3a61596f5e8a3172445844342120"
+
+[[projects]]
+  name = "github.com/dgraph-io/badger"
+  packages = [".","options","protos","skl","table","y"]
+  revision = "69611218c7078be6de16f4ea13fb256e701b6b73"
+  version = "v1.3.0"
+
+[[projects]]
   name = "github.com/dgraph-io/dgraph"
-  packages = ["client","protos/api","y"]
+  packages = ["client","lex","protos/api","protos/intern","schema","tok","types","x","y"]
   revision = "ebce34814669eec560519aa106841f066ff4e9fc"
   version = "v1.0.1"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/dgryski/go-farm"
+  packages = ["."]
+  revision = "2de33835d10275975374b37b2dcfd22c9020a1f5"
 
 [[projects]]
   name = "github.com/fsnotify/fsnotify"
@@ -18,6 +72,12 @@
   packages = ["proto"]
   revision = "342cbe0a04158f6dcb03ca0079991a51a4248c02"
   version = "v0.5"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/golang/geo"
+  packages = ["r1","r2","r3","s1","s2"]
+  revision = "a8523298cefedcf7b70bbbf4eeef24cbb3258376"
 
 [[projects]]
   branch = "master"
@@ -44,6 +104,12 @@
   version = "v1.7.4"
 
 [[projects]]
+  name = "github.com/matttproud/golang_protobuf_extensions"
+  packages = ["pbutil"]
+  revision = "3247c84500bff8d9fb6d579d800f20b3e091582c"
+  version = "v1.0.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/mitchellh/mapstructure"
   packages = ["."]
@@ -60,6 +126,36 @@
   packages = ["."]
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
   version = "v0.8.0"
+
+[[projects]]
+  name = "github.com/pkg/profile"
+  packages = ["."]
+  revision = "5b67d428864e92711fcbd2f8629456121a56d91f"
+  version = "v1.2.1"
+
+[[projects]]
+  name = "github.com/prometheus/client_golang"
+  packages = ["prometheus"]
+  revision = "c5b7fccd204277076155f10851dad72b76a49317"
+  version = "v0.8.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/prometheus/client_model"
+  packages = ["go"]
+  revision = "99fa1f4be8e564e8a6b613da7fa6f46c9edafc6c"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/prometheus/common"
+  packages = ["expfmt","internal/bitbucket.org/ww/goautoneg","model"]
+  revision = "89604d197083d4781071d3c65855d24ecfb0a563"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/prometheus/procfs"
+  packages = [".","xfs"]
+  revision = "b15cd069a83443be3154b719d0cc9fe8117f09fb"
 
 [[projects]]
   name = "github.com/spf13/afero"
@@ -96,6 +192,24 @@
   packages = ["."]
   revision = "25b30aa063fc18e48662b86996252eabdcf2f0c7"
   version = "v1.0.0"
+
+[[projects]]
+  name = "github.com/tebeka/snowball"
+  packages = ["."]
+  revision = "16e884df4e19660c5d3f61cf70d4a38c9eb1bae4"
+  version = "0.2.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/twpayne/go-geom"
+  packages = [".","encoding/geojson","encoding/wkb","encoding/wkbcommon"]
+  revision = "f8ead8b4672e0bb05caf5ef179962cc7a9f8f876"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/crypto"
+  packages = ["bcrypt","blowfish"]
+  revision = "13931e22f9e72ea58bb73048bc752b48c6d4d4ac"
 
 [[projects]]
   branch = "master"
@@ -136,6 +250,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "87e9c47441ff7e42056dc2af596bd1cb867c477ef0a454a9748946baba8d7526"
+  inputs-digest = "afc00a985e2138837f9880f8ee64eee3ab55fecf82ba114fd3999efd38e9e396"
   solver-name = "gps-cdcl"
   solver-version = 1
