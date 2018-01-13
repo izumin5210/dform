@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/izumin5210/dform/cmd"
+	"github.com/izumin5210/dform/app/cmd"
 )
 
 var (
