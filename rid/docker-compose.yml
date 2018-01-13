@@ -6,6 +6,8 @@ services:
     volumes:
       - ..:/app
       - vendor:/app/vendor
+    env_file:
+      - ../.env
     networks:
       - default
       - the_dgraph
