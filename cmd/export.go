@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/dgraph-io/dgraph/client"
-	"github.com/dgraph-io/dgraph/protos/api"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
+
+	"github.com/izumin5210/dform/infra/repo"
 )
 
 func (r *root) newExportCommand() *cobra.Command {
@@ -17,29 +17,16 @@ func (r *root) newExportCommand() *cobra.Command {
 		Short: "Export schema information",
 		Long:  "Export schema information",
 		Run: func(*cobra.Command, []string) {
-			d, err := grpc.Dial(r.getDgraphURL(), grpc.WithInsecure())
+			conn, err := grpc.Dial(r.getDgraphURL(), grpc.WithInsecure())
 			if err != nil {
 				log.Fatalln(fmt.Errorf("failed to connect with Dgraph server: %v", err))
 			}
-			fmt.Println(r.getDgraphURL())
-			c := client.NewDgraphClient(api.NewDgraphClient(d))
-			ctx := context.Background()
-			txn := c.NewTxn()
-			defer txn.Discard(ctx)
-			q := `
-					schema {
-						type
-						index
-						reverse
-						tokenizer
-					}
-			`
-			resp, err := txn.Query(ctx, q)
+			repo := repo.NewDgraphSchemaRepository(conn)
+			s, err := repo.GetSchema(context.Background())
 			if err != nil {
-				log.Fatalln(fmt.Errorf("failed to query: %v", err))
+				log.Fatalln(fmt.Errorf("failed to get schema: %v", err))
 			}
-			fmt.Println(resp.GetJson())
-			fmt.Println(resp.GetSchema())
+			fmt.Println(s.Predicates)
 		},
 	}
 }
