@@ -3,14 +3,35 @@
 set -eu
 set -o pipefail
 
-NAME=the-dgraph
-NETWORK=the_dgraph
-IMAGE="dgraph/dgraph:master"
-PORT_ZERO=9900
-PORT_HTTP=9901
-PORT_GRPC=9902
-PORT_RATEL=9903
+TAG=${DGRAPH_TAG:-master}
+IMAGE="dgraph/dgraph:${TAG}"
+NETWORK=${DGRAPH_NETWORK:-the_dgraph}
 
+PORT_OFFSET_ZERO=-2000
+PORT_OFFSET_SERVER=0
+INTERNAL_PORT_ZERO_GRPC=5080
+INTERNAL_PORT_SERVER_INTERNAL=7080
+INTERNAL_PORT_SERVER_HTTP=8080
+INTERNAL_PORT_SERVER_GRPC=9080
+INTERNAL_PORT_SERVER_RATEL=8081
+
+if [ "${1:-}" = "test" ]; then
+  shift || true
+  NAME=${TEST_DGRAPH_NAME:-the-dgraph-test}
+  VOLUME=${TEST_DGRAPH_VOLUME:-the_dgraph_test}
+  PORT_ZERO=${TEST_GRAPH_ZERO_PORT:-9920}
+  PORT_HTTP=${TEST_GRAPH_HTTP_PORT:-9921}
+  PORT_GRPC=${TEST_GRAPH_GRPC_PORT:-9922}
+  PORT_RATEL=${TEST_DGRAPH_RATEL_PORT:-9923}
+fi
+
+NAME=${NAME:-${DGRAPH_NAME:-the-dgraph}}
+VOLUME=${VOLUME:-${DGRAPH_VOLUME:-"${HOME}/docker/dgraph"}}
+
+PORT_ZERO=${PORT_ZERO:-${DGRAPH_ZERO_PORT:-9900}}
+PORT_HTTP=${PORT_HTTP:-${DGRAPH_HTTP_PORT:-9901}}
+PORT_GRPC=${PORT_GRPC:-${DGRAPH_GRPC_PORT:-9902}}
+PORT_RATEL=${PORT_RATEL:-${DGRAPH_RATEL_PORT:-9903}}
 
 #  Commands
 #-----------------------------------------------
@@ -26,7 +47,11 @@ server_start() {
   docker exec \
     -d \
     $NAME \
-    dgraph server --bindall=true --memory_mb 2048 --zero localhost:5080
+    dgraph server \
+      --bindall=true \
+      --memory_mb 2048 \
+      --zero $NAME:$INTERNAL_PORT_ZERO_GRPC \
+      --my $NAME:$INTERNAL_PORT_SERVER_INTERNAL
 
   echo "==> Starting Dgraph ratel"
   docker exec \
@@ -46,25 +71,25 @@ server_start() {
     fi
   done
 
-  echo "* ZERO:  $PORT_ZERO"
-  echo "* HTTP:  $PORT_HTTP"
-  echo "* gRPC:  $PORT_GRPC"
-  echo "* Ratel: $PORT_RATEL"
+  echo "* ZERO:  $INTERNAL_PORT_ZERO_GRPC -> $PORT_ZERO"
+  echo "* HTTP:  $INTERNAL_PORT_SERVER_HTTP -> $PORT_HTTP"
+  echo "* gRPC:  $INTERNAL_PORT_SERVER_GRPC -> $PORT_GRPC"
+  echo "* Ratel: $INTERNAL_PORT_SERVER_RATEL -> $PORT_RATEL"
 }
 
 server_create() {
   echo "==> Creating container and Dgraph zero"
   docker run \
-    -p $PORT_ZERO:5080 \
-    -p $PORT_HTTP:8080 \
-    -p $PORT_GRPC:9080 \
-    -p $PORT_RATEL:8081 \
+    -p $PORT_ZERO:$INTERNAL_PORT_ZERO_GRPC \
+    -p $PORT_HTTP:$INTERNAL_PORT_SERVER_HTTP \
+    -p $PORT_GRPC:$INTERNAL_PORT_SERVER_GRPC \
+    -p $PORT_RATEL:$INTERNAL_PORT_SERVER_RATEL \
     --name $NAME \
     --network $NETWORK \
-    -v ~/docker/dgraph:/dgraph \
+    -v $VOLUME:/dgraph \
     -d \
     $IMAGE \
-    dgraph zero --port_offset=-2000
+    dgraph zero --port_offset=$PORT_OFFSET_ZERO
 }
 
 
