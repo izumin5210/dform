@@ -1,0 +1,26 @@
+language: go
+go:
+- 1.9
+
+services:
+- docker
+
+env:
+  global:
+  - TEST_DGRAPH_HTTP_PORT=8080
+  - TEST_DGRAPH_GRPC_PORT=9080
+
+cache:
+  directories:
+    - vendor
+
+before_install:
+- go get -u github.com/golang/dep/cmd/dep
+- go get -u github.com/golang/lint/golint
+- export PATH=$PWD/bin:$PATH
+
+install:
+- make
+
+script:
+- ./script/ci-test
