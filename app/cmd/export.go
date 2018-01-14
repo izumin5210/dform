@@ -6,22 +6,20 @@ import (
 	"log"
 
 	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
 
-	"github.com/izumin5210/dform/infra/repo"
+	"github.com/izumin5210/dform/app/component"
 )
 
-func (r *root) newExportCommand() *cobra.Command {
+func newExportCommand(app component.App) *cobra.Command {
 	return &cobra.Command{
 		Use:   "export",
 		Short: "Export schema information",
 		Long:  "Export schema information",
 		Run: func(c *cobra.Command, _ []string) {
-			conn, err := grpc.Dial(r.getDgraphURL(), grpc.WithInsecure())
+			repo, err := app.DgraphSchemaRepository()
 			if err != nil {
-				log.Fatalln(fmt.Errorf("failed to connect with Dgraph server: %v", err))
+				log.Fatalln(fmt.Errorf("failed to get repository: %v", err))
 			}
-			repo := repo.NewDgraphSchemaRepository(conn)
 			s, err := repo.GetSchema(context.Background())
 			if err != nil {
 				log.Fatalln(fmt.Errorf("failed to get schema: %v", err))

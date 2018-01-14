@@ -2,74 +2,32 @@ package cmd
 
 import (
 	"fmt"
-	"log"
-	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
-)
 
-const (
-	keyDgraphURL = "dgraph-url"
+	"github.com/izumin5210/dform/app/component"
 )
-
-type root struct {
-	*cobra.Command
-	viper                   *viper.Viper
-	name, version, revision string
-	cfgFile                 string
-}
 
 // New creates a new command object
-func New(name, version, revision string) *cobra.Command {
-	rootCmd := &root{
-		Command: &cobra.Command{
-			Use:   name,
-			Short: "CLI tool to manage Dgraph schema",
-			Long:  "CLI tool to manage Dgraph schema",
-		},
-		viper:    viper.New(),
-		name:     name,
-		version:  version,
-		revision: revision,
+func New(app component.App) *cobra.Command {
+	rootCmd := &cobra.Command{
+		Use:   app.Config().Name,
+		Short: "CLI tool to manage Dgraph schema",
+		Long:  "CLI tool to manage Dgraph schema",
 	}
 
-	cobra.OnInitialize(rootCmd.initConfig)
+	cobra.OnInitialize(app.Config().Init)
 
 	rootCmd.PersistentFlags().StringVar(
-		&rootCmd.cfgFile,
+		&(app.Config().ConfigFilePath),
 		"config",
 		"",
-		fmt.Sprintf("config file (default is $PWD/%s.toml)", rootCmd.defaultConfigName()),
+		fmt.Sprintf("config file (default is $PWD/%s.toml)", app.Config().GetDefaultConfigName()),
 	)
 	rootCmd.AddCommand(
-		rootCmd.newExportCommand(),
-		rootCmd.newVersionCommand(),
+		newExportCommand(app),
+		newVersionCommand(app),
 	)
 
-	return rootCmd.Command
-}
-
-func (r *root) initConfig() {
-	if r.cfgFile != "" {
-		r.viper.SetConfigFile(r.cfgFile)
-	} else {
-		r.viper.AddConfigPath(".")
-		r.viper.SetConfigName(r.defaultConfigName())
-	}
-
-	r.viper.BindEnv(keyDgraphURL)
-	r.viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
-
-	if err := r.viper.ReadInConfig(); err != nil {
-		log.Println(fmt.Errorf("failed to read config: %v", err))
-	}
-}
-
-func (r *root) defaultConfigName() string {
-	return fmt.Sprintf(".%s", r.name)
-}
-
-func (r *root) getDgraphURL() string {
-	return r.viper.GetString(keyDgraphURL)
+	return rootCmd
 }

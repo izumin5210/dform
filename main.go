@@ -6,6 +6,8 @@ import (
 	"os"
 
 	"github.com/izumin5210/dform/app/cmd"
+	"github.com/izumin5210/dform/app/component"
+	"github.com/izumin5210/dform/app/system"
 )
 
 var (
@@ -18,7 +20,9 @@ var (
 )
 
 func main() {
-	c := cmd.New(Name, Version, Revision)
+	config := system.NewConfig(Name, Version, Revision)
+	app := component.New(config)
+	c := cmd.New(app)
 	err := c.Execute()
 	if err != nil {
 		log.Fatalln(fmt.Errorf("failed to execute command: %v", err))

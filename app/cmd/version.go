@@ -4,15 +4,18 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+
+	"github.com/izumin5210/dform/app/component"
 )
 
-func (r *root) newVersionCommand() *cobra.Command {
+func newVersionCommand(app component.App) *cobra.Command {
 	return &cobra.Command{
 		Use:   "version",
 		Short: "Print version information",
 		Long:  "Print version information",
 		Run: func(*cobra.Command, []string) {
-			fmt.Printf("%s %s (%s)\n", r.name, r.version, r.revision)
+			c := app.Config()
+			fmt.Printf("%s %s (%s)\n", c.Name, c.Version, c.Revision)
 		},
 	}
 }
