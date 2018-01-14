@@ -45,18 +45,33 @@ score: [int] .
 		},
 	}
 
-	for _, c := range cases {
+	t.Run("with invalid schema", func(t *testing.T) {
 		s := &Schema{}
-		err := s.UnmarshalText([]byte(c.in))
+		err := s.UnmarshalText([]byte("name: string"))
 
-		if err != nil {
-			t.Errorf("Unexpected error %v", err)
+		if err == nil {
+			t.Error("UnmarshalText() should return an error")
 		}
 
-		if got, want := s, c.out; !reflect.DeepEqual(got, want) {
-			t.Errorf("%q is %v in string, want %v", c.in, got, want)
+		if s.Predicates != nil {
+			t.Errorf("Unmarshaled schema predicates is %v, want nil", s.Predicates)
 		}
-	}
+	})
+
+	t.Run("with valid schema", func(t *testing.T) {
+		for _, c := range cases {
+			s := &Schema{}
+			err := s.UnmarshalText([]byte(c.in))
+
+			if err != nil {
+				t.Errorf("Unexpected error %v", err)
+			}
+
+			if got, want := s, c.out; !reflect.DeepEqual(got, want) {
+				t.Errorf("%q is %v in string, want %v", c.in, got, want)
+			}
+		}
+	})
 }
 
 func Test_Schema_MarshalText(t *testing.T) {

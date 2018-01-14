@@ -16,7 +16,7 @@ type Schema struct {
 func (s *Schema) UnmarshalText(data []byte) error {
 	updates, err := dgraphschema.Parse(string(data))
 	if err != nil {
-		return nil
+		return err
 	}
 	preds := make([]*PredicateSchema, 0, len(updates))
 	for _, u := range updates {
