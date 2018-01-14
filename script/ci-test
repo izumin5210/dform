@@ -63,7 +63,7 @@ setup_dgraph() {
 
 run_test() {
   section "Test"
-  make test
+  make cover
 }
 
 

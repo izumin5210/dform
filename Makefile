@@ -4,8 +4,11 @@ NAME := dform
 VERSION := 0.0.1
 REVISION := $(shell git describe --always)
 LDFLAGS := -ldflags="-s -w -X \"main.Name=$(NAME)\" -X \"main.Version=$(VERSION)\" -X \"main.Revision=$(REVISION)\" -extldflags \"-static\""
-GO_TEST_FLAGS  := -v -p=1
+GO_TEST_FLAGS := -v -p=1
+COVER_FILE := coverage.txt
+COVER_MODE := atomic
 
+GO_PKGS := $(shell go list ./... | grep -v vendor)
 SRC_FILES := $(shell git ls-files | grep -E "\.go$$")
 
 BIN := bin/$(NAME)
@@ -43,6 +46,19 @@ dep:
 .PHONY: test
 test:
 	@go test $(GO_TEST_FLAGS) ./...
+
+.PHONY: cover
+cover:
+	@echo "mode: $(COVER_MODE)" > $(COVER_FILE)
+	@set -e; \
+	for pkg in $(GO_PKGS); do \
+		tmp=/tmp/ro-coverage.out; \
+		go test $(GO_TEST_FLAGS) -coverprofile=$$tmp -covermode=$(COVER_MODE) $$pkg; \
+		if [ -f $$tmp ]; then \
+			cat $$tmp | tail -n +2 >> $(COVER_FILE); \
+			rm $$tmp; \
+		fi \
+	done
 
 .PHONY: lint
 lint:
