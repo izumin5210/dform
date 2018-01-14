@@ -36,6 +36,10 @@ clean:
 clobber: clean
 	rm -rf vendor
 
+.PHONY: dep
+dep:
+	dep ensure -v -vendor-only
+
 .PHONY: test
 test:
 	@go test $(GO_TEST_FLAGS) ./...

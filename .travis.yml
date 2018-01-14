@@ -20,7 +20,7 @@ before_install:
 - export PATH=$PWD/bin:$PATH
 
 install:
-- make
+- make dep
 
 script:
 - ./script/ci-test
