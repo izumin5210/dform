@@ -11,8 +11,10 @@ func Test_Schema_UnmarshalText(t *testing.T) {
 		out *Schema
 	}{
 		{
-			in:  "",
-			out: &Schema{},
+			in: "",
+			out: &Schema{
+				Predicates: []*PredicateSchema{},
+			},
 		},
 		{
 			in: "name: string .",
@@ -24,11 +26,12 @@ func Test_Schema_UnmarshalText(t *testing.T) {
 		},
 		{
 			in: `
-			name: string .
-			login: string @index(exact, term) .
+name: string .
+login: string @index(exact, term) .
 
-			rated: uid @reverse @count .
-			score: [int] .
+createdAt: dateTime .
+rated: uid @reverse @count .
+score: [int] .
 			`,
 			out: &Schema{
 				Predicates: []*PredicateSchema{
@@ -49,7 +52,7 @@ func Test_Schema_UnmarshalText(t *testing.T) {
 			t.Errorf("Unexpected error %v", err)
 		}
 
-		if got, want := s, c.out; reflect.DeepEqual(got, want) {
+		if got, want := s, c.out; !reflect.DeepEqual(got, want) {
 			t.Errorf("%q is %v in string, want %v", c.in, got, want)
 		}
 	}
