@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+set -eu
+set -o pipefail
+
+IMAGE="dgraph/dgraph:master"
+NAME=the-dgraph-ci
+PORT_HTTP=${TEST_DGRAPH_HTTP_PORT:-8080}
+PORT_GRPC=${TEST_DGRAPH_GRPC_PORT:-9080}
+
+
+#=== Utils
+#==============================================================================================
+section() {
+  printf "\e[33m==> $1\e[0m\n"
+}
+
+subsection() {
+  printf "\e[34m--> $1\e[0m\n"
+}
+
+ping_dgraph() {
+  curl -LI localhost:$PORT_HTTP/health -o /dev/null -w '%{http_code}\n' -s | grep -q 200
+}
+
+
+#=== Steps
+#==============================================================================================
+run_lint() {
+  section "Lint"
+  make lint
+}
+
+setup_dgraph() {
+  section "Setup Dgraph"
+  subsection "Starting zero"
+  docker run \
+    -p $PORT_HTTP:8080 \
+    -p $PORT_GRPC:9080 \
+    --name $NAME \
+    -d \
+    $IMAGE \
+    dgraph zero --port_offset=-2000
+
+  subsection "Starting server"
+  docker exec \
+    -d \
+    $NAME \
+    dgraph server --bindall=true --memory_mb=2048 --zero=localhost:5080
+
+  subsection "Waiting for ready"
+  while true; do
+    sleep 5
+    if ping_dgraph; then
+      echo
+      echo "ready"
+      break
+    else
+      printf '.'
+    fi
+  done
+}
+
+run_test() {
+  section "Test"
+  make cover
+}
+
+
+#=== Entrypoint
+#==============================================================================================
+main() {
+  run_lint
+  setup_dgraph
+  run_test
+}
+
+main

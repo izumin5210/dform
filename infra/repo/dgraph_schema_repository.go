@@ -15,6 +15,7 @@ type dgraphSchemaRepository struct {
 	dgraph *client.Dgraph
 }
 
+// NewDgraphSchemaRepository creates new schema repository interface for accessing Dgraph.
 func NewDgraphSchemaRepository(conn *grpc.ClientConn) schema.Repository {
 	dgraph := client.NewDgraphClient(api.NewDgraphClient(conn))
 

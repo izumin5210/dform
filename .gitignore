@@ -20,3 +20,4 @@
 /.env
 /.dform.*
 !/.dform.*.sample
+/coverage.txt
