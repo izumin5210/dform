@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"strings"
+
 	dgraphschema "github.com/dgraph-io/dgraph/schema"
 )
 
@@ -32,4 +34,13 @@ func (s *Schema) UnmarshalText(data []byte) error {
 	}
 	s.Predicates = preds
 	return nil
+}
+
+// MarshalText implements encoding.TextMarshaler
+func (s *Schema) MarshalText() ([]byte, error) {
+	lines := make([]string, 0, len(s.Predicates))
+	for _, pred := range s.Predicates {
+		lines = append(lines, pred.String())
+	}
+	return []byte(strings.Join(lines, "\n")), nil
 }

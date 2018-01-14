@@ -54,3 +54,49 @@ func Test_Schema_UnmarshalText(t *testing.T) {
 		}
 	}
 }
+
+func Test_Schema_MarshalText(t *testing.T) {
+	cases := []struct {
+		in  *Schema
+		out string
+	}{
+		{
+			in:  &Schema{},
+			out: "",
+		},
+		{
+			in: &Schema{
+				Predicates: []*PredicateSchema{
+					{Name: "name", Type: PredicateTypeString},
+				},
+			},
+			out: "name: string .",
+		},
+		{
+			in: &Schema{
+				Predicates: []*PredicateSchema{
+					{Name: "name", Type: PredicateTypeString},
+					{Name: "login", Type: PredicateTypeString, Tokenizers: []string{"exact", "term"}, Index: true},
+					{Name: "rated", Type: PredicateTypeUID, Reverse: true, Count: true},
+					{Name: "score", Type: PredicateTypeInt, List: true},
+				},
+			},
+			out: `name: string .
+login: string @index(exact, term) .
+rated: uid @reverse @count .
+score: [int] .`,
+		},
+	}
+
+	for _, c := range cases {
+		data, err := c.in.MarshalText()
+
+		if err != nil {
+			t.Errorf("Unexpected error %v", err)
+		}
+
+		if got, want := string(data), c.out; got != want {
+			t.Errorf("%v is %q in string, want %q", c.in, got, want)
+		}
+	}
+}

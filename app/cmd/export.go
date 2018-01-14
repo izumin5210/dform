@@ -16,7 +16,7 @@ func (r *root) newExportCommand() *cobra.Command {
 		Use:   "export",
 		Short: "Export schema information",
 		Long:  "Export schema information",
-		Run: func(*cobra.Command, []string) {
+		Run: func(c *cobra.Command, _ []string) {
 			conn, err := grpc.Dial(r.getDgraphURL(), grpc.WithInsecure())
 			if err != nil {
 				log.Fatalln(fmt.Errorf("failed to connect with Dgraph server: %v", err))
@@ -26,7 +26,11 @@ func (r *root) newExportCommand() *cobra.Command {
 			if err != nil {
 				log.Fatalln(fmt.Errorf("failed to get schema: %v", err))
 			}
-			fmt.Println(s.Predicates)
+			data, err := s.MarshalText()
+			if err != nil {
+				log.Fatalln(fmt.Errorf("failed to marshal schema: %v", err))
+			}
+			c.Println(string(data))
 		},
 	}
 }
