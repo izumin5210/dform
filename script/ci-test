@@ -4,7 +4,7 @@ set -eu
 set -o pipefail
 
 IMAGE="dgraph/dgraph:master"
-NAME=the-dgraph
+NAME=the-dgraph-ci
 PORT_HTTP=${TEST_DGRAPH_HTTP_PORT:-8080}
 PORT_GRPC=${TEST_DGRAPH_GRPC_PORT:-9080}
 
@@ -46,7 +46,7 @@ setup_dgraph() {
   docker exec \
     -d \
     $NAME \
-    dgraph server --bindall=true --memory_mb 2048
+    dgraph server --bindall=true --memory_mb=2048 --zero=localhost:5080
 
   subsection "Waiting for ready"
   while true; do
