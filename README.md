@@ -1,5 +1,8 @@
 # dform
+[![Build Status](https://travis-ci.org/izumin5210/dform.svg?branch=master)](https://travis-ci.org/izumin5210/dform)
+[![codecov](https://codecov.io/gh/izumin5210/dform/branch/master/graph/badge.svg)](https://codecov.io/gh/izumin5210/dform)
 [![GoDoc](https://godoc.org/github.com/izumin5210/dform?status.svg)](https://godoc.org/github.com/izumin5210/dform)
+[![Go Report Card](https://goreportcard.com/badge/github.com/izumin5210/dform)](https://goreportcard.com/report/github.com/izumin5210/dform)
 [![license](https://img.shields.io/github/license/izumin5210/dform.svg)](./LICENSE)
 
 CLI to manage [Dgraph](https://dgraph.io/) schema.
