@@ -3,6 +3,7 @@ package schema
 import (
 	"strings"
 
+	"github.com/dgraph-io/dgraph/protos/intern"
 	dgraphschema "github.com/dgraph-io/dgraph/schema"
 )
 
@@ -21,11 +22,14 @@ func (s *Schema) UnmarshalText(data []byte) error {
 	for _, u := range updates {
 		t, err := PredicateTypeOf(u.GetValueType().String())
 		if err != nil {
-			return nil
+			return err
 		}
+		d := u.GetDirective()
 		pred := &PredicateSchema{
 			Name:       u.GetPredicate(),
 			Type:       t,
+			Index:      d == intern.SchemaUpdate_INDEX,
+			Reverse:    d == intern.SchemaUpdate_REVERSE,
 			Tokenizers: u.GetTokenizer(),
 			Count:      u.GetCount(),
 			List:       u.GetList(),

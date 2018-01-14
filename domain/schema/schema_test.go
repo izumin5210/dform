@@ -37,6 +37,7 @@ score: [int] .
 				Predicates: []*PredicateSchema{
 					{Name: "name", Type: PredicateTypeString},
 					{Name: "login", Type: PredicateTypeString, Tokenizers: []string{"exact", "term"}, Index: true},
+					{Name: "createdAt", Type: PredicateTypeDateTime},
 					{Name: "rated", Type: PredicateTypeUID, Reverse: true, Count: true},
 					{Name: "score", Type: PredicateTypeInt, List: true},
 				},
