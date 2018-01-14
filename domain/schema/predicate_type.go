@@ -1,6 +1,9 @@
 package schema
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 // PredicateType represents schema types in Dgraph.
 type PredicateType int
@@ -38,7 +41,7 @@ func init() {
 	}
 	predTypeByName = map[string]PredicateType{}
 	for t, n := range nameByPredType {
-		predTypeByName[n] = t
+		predTypeByName[strings.ToLower(n)] = t
 	}
 }
 
@@ -48,7 +51,7 @@ func (t PredicateType) String() string {
 
 // PredicateTypeOf returns PredicateType corresponds to given name
 func PredicateTypeOf(name string) (PredicateType, error) {
-	t, ok := predTypeByName[name]
+	t, ok := predTypeByName[strings.ToLower(name)]
 	if !ok {
 		return PredicateTypeDefault, fmt.Errorf("unexpected type: %s", name)
 	}

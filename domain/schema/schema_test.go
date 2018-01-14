@@ -11,8 +11,10 @@ func Test_Schema_UnmarshalText(t *testing.T) {
 		out *Schema
 	}{
 		{
-			in:  "",
-			out: &Schema{},
+			in: "",
+			out: &Schema{
+				Predicates: []*PredicateSchema{},
+			},
 		},
 		{
 			in: "name: string .",
@@ -24,16 +26,18 @@ func Test_Schema_UnmarshalText(t *testing.T) {
 		},
 		{
 			in: `
-			name: string .
-			login: string @index(exact, term) .
+name: string .
+login: string @index(exact, term) .
 
-			rated: uid @reverse @count .
-			score: [int] .
+createdAt: dateTime .
+rated: uid @reverse @count .
+score: [int] .
 			`,
 			out: &Schema{
 				Predicates: []*PredicateSchema{
 					{Name: "name", Type: PredicateTypeString},
 					{Name: "login", Type: PredicateTypeString, Tokenizers: []string{"exact", "term"}, Index: true},
+					{Name: "createdAt", Type: PredicateTypeDateTime},
 					{Name: "rated", Type: PredicateTypeUID, Reverse: true, Count: true},
 					{Name: "score", Type: PredicateTypeInt, List: true},
 				},
@@ -41,18 +45,33 @@ func Test_Schema_UnmarshalText(t *testing.T) {
 		},
 	}
 
-	for _, c := range cases {
+	t.Run("with invalid schema", func(t *testing.T) {
 		s := &Schema{}
-		err := s.UnmarshalText([]byte(c.in))
+		err := s.UnmarshalText([]byte("name: string"))
 
-		if err != nil {
-			t.Errorf("Unexpected error %v", err)
+		if err == nil {
+			t.Error("UnmarshalText() should return an error")
 		}
 
-		if got, want := s, c.out; reflect.DeepEqual(got, want) {
-			t.Errorf("%q is %v in string, want %v", c.in, got, want)
+		if s.Predicates != nil {
+			t.Errorf("Unmarshaled schema predicates is %v, want nil", s.Predicates)
 		}
-	}
+	})
+
+	t.Run("with valid schema", func(t *testing.T) {
+		for _, c := range cases {
+			s := &Schema{}
+			err := s.UnmarshalText([]byte(c.in))
+
+			if err != nil {
+				t.Errorf("Unexpected error %v", err)
+			}
+
+			if got, want := s, c.out; !reflect.DeepEqual(got, want) {
+				t.Errorf("%q is %v in string, want %v", c.in, got, want)
+			}
+		}
+	})
 }
 
 func Test_Schema_MarshalText(t *testing.T) {
