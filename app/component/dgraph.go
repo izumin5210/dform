@@ -6,9 +6,7 @@ import (
 	"github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
 
 	"github.com/izumin5210/dform/app/system"
 	"github.com/izumin5210/dform/domain/schema"
@@ -68,7 +66,7 @@ func dialOptions() []grpc.DialOption {
 func unaryClientInterceptor() grpc.DialOption {
 	return grpc.WithUnaryInterceptor(
 		grpc_middleware.ChainUnaryClient(
-			grpc_zap.UnaryClientInterceptor(clientInterceptorLogger(), grpcZapOptions...),
+			grpc_zap.UnaryClientInterceptor(clientInterceptorLogger()),
 			grpc_zap.PayloadUnaryClientInterceptor(payloadInterceptorLogger(), defaultDecider),
 		),
 	)
@@ -77,23 +75,18 @@ func unaryClientInterceptor() grpc.DialOption {
 func streamClientInterceptor() grpc.DialOption {
 	return grpc.WithStreamInterceptor(
 		grpc_middleware.ChainStreamClient(
-			grpc_zap.StreamClientInterceptor(clientInterceptorLogger(), grpcZapOptions...),
+			grpc_zap.StreamClientInterceptor(clientInterceptorLogger()),
 			grpc_zap.PayloadStreamClientInterceptor(payloadInterceptorLogger(), defaultDecider),
 		),
 	)
 }
 
 var defaultDecider = func(context.Context, string) bool { return true }
-var grpcZapOptions = []grpc_zap.Option{
-	grpc_zap.WithLevels(
-		func(codes.Code) zapcore.Level { return zapcore.DebugLevel },
-	),
-}
 
 func clientInterceptorLogger() *zap.Logger {
 	return log.Logger().WithOptions(zap.AddCallerSkip(2))
 }
 
 func payloadInterceptorLogger() *zap.Logger {
-	return log.Logger().WithOptions(zap.AddCallerSkip(3))
+	return log.Logger().WithOptions(zap.AddCallerSkip(4))
 }
