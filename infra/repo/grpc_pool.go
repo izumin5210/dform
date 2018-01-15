@@ -28,6 +28,7 @@ type grpcPool struct {
 }
 
 func (p *grpcPool) Get() (*grpc.ClientConn, error) {
+	log.Debug("Dial gRPC connection", "addr", p.url)
 	return grpc.Dial(p.url, dialOptions()...)
 }
 
