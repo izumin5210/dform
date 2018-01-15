@@ -20,18 +20,9 @@ func New(app component.App) *cobra.Command {
 		Long:  "CLI tool to manage Dgraph schema",
 		PersistentPreRunE: func(*cobra.Command, []string) error {
 			// initialize logger
-			var lv zap.AtomicLevel
-			var logging bool
 			if app.Config().Debug {
-				lv = zap.NewAtomicLevelAt(zapcore.DebugLevel)
-				logging = true
-			} else if app.Config().Verbose {
-				lv = zap.NewAtomicLevelAt(zapcore.InfoLevel)
-				logging = true
-			}
-			if logging {
 				zapCfg := zap.NewProductionConfig()
-				zapCfg.Level = lv
+				zapCfg.Level = zap.NewAtomicLevelAt(zapcore.DebugLevel)
 				logger, err := zapCfg.Build()
 				if err != nil {
 					return err
@@ -43,6 +34,15 @@ func New(app component.App) *cobra.Command {
 					zap.String("goos", runtime.GOOS),
 					zap.String("goarch", runtime.GOARCH),
 				)
+				log.SetLogger(logger)
+			} else if app.Config().Verbose {
+				zapCfg := zap.NewDevelopmentConfig()
+				zapCfg.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+				zapCfg.Level = zap.NewAtomicLevelAt(zapcore.InfoLevel)
+				logger, err := zapCfg.Build()
+				if err != nil {
+					return err
+				}
 				log.SetLogger(logger)
 			}
 			return nil
