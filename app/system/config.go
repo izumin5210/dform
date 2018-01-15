@@ -22,6 +22,7 @@ type Config struct {
 	Name, Version, Revision string
 	ConfigFilePath          string
 	SchemaFilePath          string
+	Debug, Verbose          bool
 	viper                   *viper.Viper
 }
 
