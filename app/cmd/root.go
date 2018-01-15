@@ -25,6 +25,7 @@ func New(app component.App) *cobra.Command {
 		fmt.Sprintf("config file (default is $PWD/%s.toml)", app.Config().GetDefaultConfigName()),
 	)
 	rootCmd.AddCommand(
+		newDiffCommand(app),
 		newExportCommand(app),
 		newVersionCommand(app),
 	)
