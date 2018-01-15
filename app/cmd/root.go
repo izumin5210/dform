@@ -70,9 +70,10 @@ func New(app component.App) *cobra.Command {
 		false,
 		fmt.Sprintf("Debug level output"),
 	)
-	rootCmd.PersistentFlags().BoolVar(
+	rootCmd.PersistentFlags().BoolVarP(
 		&(app.Config().Verbose),
 		"verbose",
+		"v",
 		false,
 		fmt.Sprintf("Verbose level output"),
 	)
