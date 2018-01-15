@@ -88,8 +88,14 @@
 [[projects]]
   branch = "master"
   name = "github.com/golang/protobuf"
-  packages = ["proto","ptypes","ptypes/any","ptypes/duration","ptypes/timestamp"]
+  packages = ["jsonpb","proto","ptypes","ptypes/any","ptypes/duration","ptypes/struct","ptypes/timestamp"]
   revision = "1e59b77b52bf8e4b449a57e6f79f21226d571845"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/grpc-ecosystem/go-grpc-middleware"
+  packages = [".","logging","logging/zap","tags","tags/zap"]
+  revision = "d0c54e68681ec7999ac17864470f3bee6521ba2b"
 
 [[projects]]
   branch = "master"
@@ -286,6 +292,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a6d5844c4c5fb24169ea1c5cbd781b4a731d5cffc59aabed8e3088bc3fc93af0"
+  inputs-digest = "df6b1a53723fe3dd1cf947ab32d77c78728846adc086e534c1221c4855eff3de"
   solver-name = "gps-cdcl"
   solver-version = 1
