@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/izumin5210/dform/domain/schema"
@@ -42,4 +43,8 @@ func (r *fileSchemaRepository) GetSchema(ctx context.Context) (*schema.Schema, e
 	}
 
 	return s, nil
+}
+
+func (r *fileSchemaRepository) Update(ctx context.Context, diff *schema.Diff) error {
+	return errors.New("not yet implemented")
 }

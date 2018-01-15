@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/dgraph-io/dgraph/client"
@@ -60,4 +61,8 @@ func (r *dgraphSchemaRepository) GetSchema(ctx context.Context) (*schema.Schema,
 	}
 
 	return s, nil
+}
+
+func (r *dgraphSchemaRepository) Update(ctx context.Context, diff *schema.Diff) error {
+	return errors.New("not yet implemented")
 }
