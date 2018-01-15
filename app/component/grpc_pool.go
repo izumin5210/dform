@@ -12,14 +12,18 @@ type Grpc interface {
 
 func newGrpc(config *system.Config) Grpc {
 	return &grpc{
-		pool: repo.NewGrpcPool(config.GetDgraphURL()),
+		config: config,
 	}
 }
 
 type grpc struct {
-	pool repo.GrpcPool
+	config *system.Config
+	pool   repo.GrpcPool
 }
 
 func (g *grpc) GetDgraphPool() repo.GrpcPool {
+	if g.pool == nil {
+		g.pool = repo.NewGrpcPool(g.config.GetDgraphURL())
+	}
 	return g.pool
 }
