@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 
 	"github.com/izumin5210/dform/app/component"
@@ -33,12 +34,14 @@ func newDiffCommand(app component.App) *cobra.Command {
 			}
 
 			diff := schema.MakeDiff(s1, s2)
+			red := color.New(color.FgRed).FprintfFunc()
+			green := color.New(color.FgGreen).FprintfFunc()
 
 			if len(diff.Inserted) > 0 {
 				c.Println("Added predicates:")
 				c.Println("")
 				for _, pred := range diff.Inserted {
-					c.Printf("    + %s\n", pred)
+					green(c.OutOrStdout(), "    + %s\n", pred)
 				}
 				c.Println("")
 			}
@@ -47,7 +50,7 @@ func newDiffCommand(app component.App) *cobra.Command {
 				c.Println("Dropped predicates:")
 				c.Println("")
 				for _, pred := range diff.Deleted {
-					c.Printf("    - %s\n", pred)
+					red(c.OutOrStdout(), "    - %s\n", pred)
 				}
 				c.Println("")
 			}
@@ -56,8 +59,8 @@ func newDiffCommand(app component.App) *cobra.Command {
 				c.Println("Modified predicates:")
 				c.Println("")
 				for _, pair := range diff.Modified {
-					c.Printf("    - %s\n", pair.From)
-					c.Printf("    + %s\n\n", pair.To)
+					red(c.OutOrStdout(), "    - %s\n", pair.From)
+					green(c.OutOrStdout(), "    + %s\n", pair.To)
 				}
 			}
 		},
