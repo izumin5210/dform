@@ -9,13 +9,19 @@ import (
 )
 
 const (
-	keyDgraphURL = "dgraph-url"
+	// viper keys
+	keyDgraphURL  = "dgraph-url"
+	keySchemaPath = "dgraph-schema-path"
+
+	// default values
+	defaultSchemaName = "dgraph.schema"
 )
 
 // Config stores general setting params and provides accessors for them.
 type Config struct {
 	Name, Version, Revision string
 	ConfigFilePath          string
+	SchemaFilePath          string
 	viper                   *viper.Viper
 }
 
@@ -51,7 +57,22 @@ func (c *Config) GetDefaultConfigName() string {
 	return fmt.Sprintf(".%s", c.Name)
 }
 
+// GetDefaultSchemaName returns a default schema file path
+func (c *Config) GetDefaultSchemaName() string {
+	return defaultSchemaName
+}
+
 // GetDgraphURL returns the URL for the target Dgraph.
 func (c *Config) GetDgraphURL() string {
 	return c.viper.GetString(keyDgraphURL)
+}
+
+// GetSchemaPath returns the path for the schema file.
+func (c *Config) GetSchemaPath() string {
+	if len(c.ConfigFilePath) > 0 {
+		return c.ConfigFilePath
+	} else if c.viper.IsSet(keySchemaPath) {
+		return c.viper.GetString(keySchemaPath)
+	}
+	return c.GetDefaultSchemaName()
 }
