@@ -11,7 +11,7 @@ import (
 func Test_DgraphSchemaRepository_GetSchema(t *testing.T) {
 	defer testDgraph.MustCleanup(t)
 
-	repo := NewDgraphSchemaRepository(testDgraph.GetConn())
+	repo := NewDgraphSchemaRepository(testDgraph)
 
 	t.Run("when schema has not defined", func(t *testing.T) {
 		schema, err := repo.GetSchema(context.Background())

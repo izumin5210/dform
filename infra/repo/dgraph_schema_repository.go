@@ -6,26 +6,31 @@ import (
 
 	"github.com/dgraph-io/dgraph/client"
 	"github.com/dgraph-io/dgraph/protos/api"
-	"google.golang.org/grpc"
 
 	"github.com/izumin5210/dform/domain/schema"
 )
 
 type dgraphSchemaRepository struct {
-	dgraph *client.Dgraph
+	pool GrpcPool
 }
 
 // NewDgraphSchemaRepository creates new schema repository interface for accessing Dgraph.
-func NewDgraphSchemaRepository(conn *grpc.ClientConn) schema.Repository {
-	dgraph := client.NewDgraphClient(api.NewDgraphClient(conn))
-
+func NewDgraphSchemaRepository(pool GrpcPool) schema.Repository {
 	return &dgraphSchemaRepository{
-		dgraph: dgraph,
+		pool: pool,
 	}
 }
 
 func (r *dgraphSchemaRepository) GetSchema(ctx context.Context) (*schema.Schema, error) {
-	txn := r.dgraph.NewTxn()
+	conn, err := r.pool.Get()
+	if err != nil {
+		return nil, fmt.Errorf("failed to connect to Dgraph: %v", err)
+	}
+	defer conn.Close()
+
+	dgraph := client.NewDgraphClient(api.NewDgraphClient(conn))
+
+	txn := dgraph.NewTxn()
 	defer txn.Discard(ctx)
 
 	q := "schema {}"
