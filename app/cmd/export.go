@@ -15,11 +15,7 @@ func newExportCommand(app component.App) *cobra.Command {
 		Short: "Export schema information",
 		Long:  "Export schema information",
 		RunE: func(c *cobra.Command, _ []string) error {
-			repo, err := app.DgraphSchemaRepository()
-			if err != nil {
-				log.Error("failed to get repository: %v", "error", err)
-				return err
-			}
+			repo := app.DgraphSchemaRepository()
 			s, err := repo.GetSchema(context.Background())
 			if err != nil {
 				log.Error("failed to get schema", "error", err)
