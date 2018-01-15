@@ -18,8 +18,8 @@ func init() {
 
 // SetLogger sets logger implementation
 func SetLogger(l *zap.Logger) {
-	logger = l
-	sLogger = l.Sugar()
+	logger = l.WithOptions(zap.AddCallerSkip(1))
+	sLogger = logger.Sugar()
 
 	// See https://github.com/grpc-ecosystem/go-grpc-middleware/blob/d0c54e68681ec7999ac17864470f3bee6521ba2b/logging/zap/grpclogger.go#L13-L18
 	zgl := &zapGrpcLogger{logger.With(zap.String("system", "grpc"), zap.Bool("grpc_log", true))}
