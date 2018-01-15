@@ -1,13 +1,12 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"os"
 
 	"github.com/izumin5210/dform/app/cmd"
 	"github.com/izumin5210/dform/app/component"
 	"github.com/izumin5210/dform/app/system"
+	"github.com/izumin5210/dform/util/log"
 )
 
 var (
@@ -20,12 +19,19 @@ var (
 )
 
 func main() {
+	os.Exit(run())
+}
+
+func run() int {
+	defer log.Close()
+
 	config := system.NewConfig(Name, Version, Revision)
 	app := component.New(config)
 	c := cmd.New(app)
 	err := c.Execute()
 	if err != nil {
-		log.Fatalln(fmt.Errorf("failed to execute command: %v", err))
-		os.Exit(-1)
+		log.Error("failed to execute command", "error", err)
+		return 1
 	}
+	return 0
 }

@@ -47,9 +47,6 @@ func New(app component.App) *cobra.Command {
 			}
 			return nil
 		},
-		PersistentPostRun: func(*cobra.Command, []string) {
-			log.Close()
-		},
 	}
 
 	cobra.OnInitialize(app.Config().Init)
