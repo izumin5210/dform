@@ -22,31 +22,25 @@ func New(app component.App) *cobra.Command {
 		SilenceErrors: true,
 		PersistentPreRunE: func(*cobra.Command, []string) error {
 			// initialize logger
+			var zapCfg zap.Config
 			if app.Config().Debug {
-				zapCfg := zap.NewProductionConfig()
+				zapCfg = zap.NewProductionConfig()
 				zapCfg.Level = zap.NewAtomicLevelAt(zapcore.DebugLevel)
-				logger, err := zapCfg.Build()
-				if err != nil {
-					return err
+				zapCfg.InitialFields = map[string]interface{}{
+					"version":         app.Config().Version,
+					"revision":        app.Config().Revision,
+					"runtime_version": runtime.Version(),
+					"goos":            runtime.GOOS,
+					"goarch":          runtime.GOARCH,
 				}
-				logger = logger.With(
-					zap.String("version", app.Config().Version),
-					zap.String("revision", app.Config().Revision),
-					zap.String("runtime_version", runtime.Version()),
-					zap.String("goos", runtime.GOOS),
-					zap.String("goarch", runtime.GOARCH),
-				)
-				log.SetLogger(logger)
-			} else {
-				zapCfg := zap.NewDevelopmentConfig()
+			} else if app.Config().Verbose {
+				zapCfg = zap.NewDevelopmentConfig()
 				zapCfg.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 				zapCfg.DisableStacktrace = true
 				zapCfg.DisableCaller = true
-				if app.Config().Verbose {
-					zapCfg.Level = zap.NewAtomicLevelAt(zapcore.InfoLevel)
-				} else {
-					zapCfg.Level = zap.NewAtomicLevelAt(zapcore.ErrorLevel)
-				}
+				zapCfg.Level = zap.NewAtomicLevelAt(zapcore.InfoLevel)
+			}
+			if len(zapCfg.Encoding) != 0 {
 				logger, err := zapCfg.Build()
 				if err != nil {
 					return err
