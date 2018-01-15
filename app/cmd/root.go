@@ -41,6 +41,7 @@ func New(app component.App) *cobra.Command {
 				zapCfg := zap.NewDevelopmentConfig()
 				zapCfg.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 				zapCfg.DisableStacktrace = true
+				zapCfg.DisableCaller = true
 				if app.Config().Verbose {
 					zapCfg.Level = zap.NewAtomicLevelAt(zapcore.InfoLevel)
 				} else {

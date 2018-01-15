@@ -22,7 +22,7 @@ func SetLogger(l *zap.Logger) {
 	sLogger = logger.Sugar()
 
 	// See https://github.com/grpc-ecosystem/go-grpc-middleware/blob/d0c54e68681ec7999ac17864470f3bee6521ba2b/logging/zap/grpclogger.go#L13-L18
-	zgl := &zapGrpcLogger{logger.With(zap.String("system", "grpc"), zap.Bool("grpc_log", true))}
+	zgl := &zapGrpcLogger{l.WithOptions(zap.AddCallerSkip(3)).With(zap.String("system", "grpc"), zap.Bool("grpc_log", true))}
 	grpclog.SetLogger(zgl)
 
 	Debug("logger replaced")
