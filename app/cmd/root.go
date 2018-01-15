@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"runtime"
 
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
@@ -35,6 +36,13 @@ func New(app component.App) *cobra.Command {
 				if err != nil {
 					return err
 				}
+				logger = logger.With(
+					zap.String("version", app.Config().Version),
+					zap.String("revision", app.Config().Revision),
+					zap.String("runtime_version", runtime.Version()),
+					zap.String("goos", runtime.GOOS),
+					zap.String("goarch", runtime.GOARCH),
+				)
 				log.SetLogger(logger)
 			}
 			return nil
