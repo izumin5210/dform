@@ -13,7 +13,7 @@ type Diff struct {
 
 // ModifiedPredicate represents a changes in 2 predicates
 type ModifiedPredicate struct {
-	from, to *PredicateSchema
+	From, To *PredicateSchema
 }
 
 // MakeDiff creates Diff in 2 schemata
@@ -29,7 +29,7 @@ func MakeDiff(s1, s2 *Schema) *Diff {
 		if p1, ok := predByName[p2.Name]; ok {
 			delete(predByName, p2.Name)
 			if !reflect.DeepEqual(p1, p2) {
-				diff.Modified = append(diff.Modified, &ModifiedPredicate{from: p1, to: p2})
+				diff.Modified = append(diff.Modified, &ModifiedPredicate{From: p1, To: p2})
 			}
 		} else {
 			diff.Inserted = append(diff.Inserted, p2)

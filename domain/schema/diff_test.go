@@ -75,8 +75,8 @@ func Test_Diff(t *testing.T) {
 			out: &Diff{
 				Modified: []*ModifiedPredicate{
 					{
-						from: &PredicateSchema{Name: "friend", Type: PredicateTypeUID, Reverse: true},
-						to:   &PredicateSchema{Name: "friend", Type: PredicateTypeUID, Reverse: true, Count: true},
+						From: &PredicateSchema{Name: "friend", Type: PredicateTypeUID, Reverse: true},
+						To:   &PredicateSchema{Name: "friend", Type: PredicateTypeUID, Reverse: true, Count: true},
 					},
 				},
 			},
@@ -111,12 +111,12 @@ func Test_Diff(t *testing.T) {
 				},
 				Modified: []*ModifiedPredicate{
 					{
-						from: &PredicateSchema{Name: "login", Type: PredicateTypeString},
-						to:   &PredicateSchema{Name: "login", Type: PredicateTypeString, Index: true, Tokenizers: []string{"exact"}},
+						From: &PredicateSchema{Name: "login", Type: PredicateTypeString},
+						To:   &PredicateSchema{Name: "login", Type: PredicateTypeString, Index: true, Tokenizers: []string{"exact"}},
 					},
 					{
-						from: &PredicateSchema{Name: "friend", Type: PredicateTypeUID, Reverse: true},
-						to:   &PredicateSchema{Name: "friend", Type: PredicateTypeUID, Reverse: true, Count: true},
+						From: &PredicateSchema{Name: "friend", Type: PredicateTypeUID, Reverse: true},
+						To:   &PredicateSchema{Name: "friend", Type: PredicateTypeUID, Reverse: true, Count: true},
 					},
 				},
 			},
