@@ -7,6 +7,7 @@ import (
 // App contains dependencies for this app.
 type App interface {
 	Dgraph
+	File
 	Config() *system.Config
 }
 
@@ -14,12 +15,14 @@ type App interface {
 func New(config *system.Config) App {
 	return &app{
 		Dgraph: newDgraph(config),
+		File:   newFile(config),
 		config: config,
 	}
 }
 
 type app struct {
 	Dgraph
+	File
 	config *system.Config
 }
 
