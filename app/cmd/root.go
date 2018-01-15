@@ -29,16 +29,13 @@ func New(app component.App) *cobra.Command {
 				logging = true
 			}
 			if logging {
-				config := zap.Config{
-					Level:       lv,
-					Development: false,
-					Encoding:    "json",
-				}
-				logger, err := config.Build()
+				zapCfg := zap.NewProductionConfig()
+				zapCfg.Level = lv
+				logger, err := zapCfg.Build()
 				if err != nil {
 					return err
 				}
-				log.SetLogger(logger.Sugar())
+				log.SetLogger(logger)
 			}
 			return nil
 		},

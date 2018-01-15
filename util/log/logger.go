@@ -3,35 +3,57 @@ package log
 import "go.uber.org/zap"
 
 var (
-	logger = zap.NewNop().Sugar()
+	logger  *zap.Logger
+	sLogger *zap.SugaredLogger
 )
 
+func init() {
+	SetLogger(zap.NewNop())
+}
+
 // SetLogger sets logger implementation
-func SetLogger(l *zap.SugaredLogger) {
+func SetLogger(l *zap.Logger) {
 	logger = l
+	sLogger = l.Sugar()
+	Debug("logger replaced")
+}
+
+// Logger returns current logger object
+func Logger() *zap.Logger {
+	return logger
 }
 
 // Close closes the logger
 func Close() error {
-	return logger.Sync()
+	var errs []error
+	if err := logger.Sync(); err != nil {
+		errs = append(errs, err)
+	}
+	if err := sLogger.Sync(); err != nil {
+		errs = append(errs, err)
+	}
+	if len(errs) > 0 {
+		return errs[0]
+	}
+	return nil
 }
 
 // Debug logs message and key-values pairs as DEBUG
 func Debug(msg string, args ...interface{}) {
-	logger.Debugw(msg, args)
+	sLogger.Debugw(msg, args...)
 }
 
 // Info logs message and key-values pairs as INFO
 func Info(msg string, args ...interface{}) {
-	logger.Infow(msg, args)
+	sLogger.Infow(msg, args...)
 }
 
 // Warn logs message and key-values pairs in as WARN
 func Warn(msg string, args ...interface{}) {
-	logger.Warnw(msg, args)
+	sLogger.Warnw(msg, args...)
 }
 
 // Error logs message and key-values pairs in as ERROR
 func Error(msg string, args ...interface{}) {
-	logger.Errorw(msg, args)
+	sLogger.Errorw(msg, args...)
 }
