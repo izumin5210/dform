@@ -37,10 +37,15 @@ func New(app component.App) *cobra.Command {
 					zap.String("goarch", runtime.GOARCH),
 				)
 				log.SetLogger(logger)
-			} else if app.Config().Verbose {
+			} else {
 				zapCfg := zap.NewDevelopmentConfig()
 				zapCfg.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-				zapCfg.Level = zap.NewAtomicLevelAt(zapcore.InfoLevel)
+				zapCfg.DisableStacktrace = true
+				if app.Config().Verbose {
+					zapCfg.Level = zap.NewAtomicLevelAt(zapcore.InfoLevel)
+				} else {
+					zapCfg.Level = zap.NewAtomicLevelAt(zapcore.ErrorLevel)
+				}
 				logger, err := zapCfg.Build()
 				if err != nil {
 					return err
