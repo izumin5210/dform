@@ -2,10 +2,11 @@ package system
 
 import (
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/spf13/viper"
+
+	"github.com/izumin5210/dform/util/log"
 )
 
 const (
@@ -22,6 +23,7 @@ type Config struct {
 	Name, Version, Revision string
 	ConfigFilePath          string
 	SchemaFilePath          string
+	Debug, Verbose          bool
 	viper                   *viper.Viper
 }
 
@@ -48,7 +50,7 @@ func (c *Config) Init() {
 	c.viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
 
 	if err := c.viper.ReadInConfig(); err != nil {
-		log.Println(fmt.Errorf("failed to read config: %v", err))
+		log.Error("failed to read config", "error", err)
 	}
 }
 

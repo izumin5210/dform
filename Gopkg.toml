@@ -40,3 +40,11 @@
 [[constraint]]
   name = "github.com/fatih/color"
   version = "1.5.0"
+
+[[constraint]]
+  name = "go.uber.org/zap"
+  version = "1.7.1"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/grpc-ecosystem/go-grpc-middleware"

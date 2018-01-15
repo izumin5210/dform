@@ -2,14 +2,13 @@ package cmd
 
 import (
 	"context"
-	"fmt"
-	"log"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 
 	"github.com/izumin5210/dform/app/component"
 	"github.com/izumin5210/dform/domain/schema"
+	"github.com/izumin5210/dform/util/log"
 )
 
 func newDiffCommand(app component.App) *cobra.Command {
@@ -17,20 +16,23 @@ func newDiffCommand(app component.App) *cobra.Command {
 		Use:   "diff",
 		Short: "Diff schema",
 		Long:  "Diff schema",
-		Run: func(c *cobra.Command, _ []string) {
+		RunE: func(c *cobra.Command, _ []string) error {
 			fileRepo := app.FileSchemaRepository()
 			dgraphRepo, err := app.DgraphSchemaRepository()
 			if err != nil {
-				log.Fatalln(fmt.Errorf("failed to get repository: %v", err))
+				log.Error("failed to get repository", "error", err)
+				return err
 			}
 
 			s1, err := dgraphRepo.GetSchema(context.Background())
 			if err != nil {
-				log.Fatalln(fmt.Errorf("failed to get schema: %v", err))
+				log.Error("failed to get schema from Dgraph", "error", err)
+				return err
 			}
 			s2, err := fileRepo.GetSchema(context.Background())
 			if err != nil {
-				log.Fatalln(fmt.Errorf("failed to get schema: %v", err))
+				log.Error("failed to get schema from filesystem", "error", err)
+				return err
 			}
 
 			diff := schema.MakeDiff(s1, s2)
@@ -63,6 +65,8 @@ func newDiffCommand(app component.App) *cobra.Command {
 					green(c.OutOrStdout(), "    + %s\n", pair.To)
 				}
 			}
+
+			return nil
 		},
 	}
 }
