@@ -18,11 +18,7 @@ func newDiffCommand(app component.App) *cobra.Command {
 		Long:  "Diff schema",
 		RunE: func(c *cobra.Command, _ []string) error {
 			fileRepo := app.FileSchemaRepository()
-			dgraphRepo, err := app.DgraphSchemaRepository()
-			if err != nil {
-				log.Error("failed to get repository", "error", err)
-				return err
-			}
+			dgraphRepo := app.DgraphSchemaRepository()
 
 			s1, err := dgraphRepo.GetSchema(context.Background())
 			if err != nil {

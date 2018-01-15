@@ -3,7 +3,6 @@ package repo
 import (
 	"context"
 	"fmt"
-	"log"
 	"os"
 	"testing"
 
@@ -20,7 +19,7 @@ var (
 
 func TestMain(m *testing.M) {
 	testDgraph = MustCreateTestDgraph()
-	defer testDgraph.MustClose()
+	defer testDgraph.Cleanup()
 
 	// Start testing
 	code := m.Run()
@@ -30,8 +29,7 @@ func TestMain(m *testing.M) {
 //  TestDgraph
 //-----------------------------------------------
 type TestDgraph struct {
-	conn   *grpc.ClientConn
-	client *client.Dgraph
+	GrpcPool
 }
 
 func MustCreateTestDgraph() *TestDgraph {
@@ -43,23 +41,23 @@ func MustCreateTestDgraph() *TestDgraph {
 	} else {
 		addr = "localhost:9922" // default setting of the-dgraph-test container
 	}
-	conn, err := grpc.Dial(addr, grpc.WithInsecure())
-	if err != nil {
-		log.Fatalf("Faild to connect to Dgraph server: %v", err)
-	}
 
 	return &TestDgraph{
-		conn:   conn,
-		client: client.NewDgraphClient(api.NewDgraphClient(conn)),
+		GrpcPool: NewGrpcPool(addr),
 	}
 }
 
-func (d *TestDgraph) GetConn() *grpc.ClientConn {
-	return d.conn
+func (d *TestDgraph) getClient(conn *grpc.ClientConn) *client.Dgraph {
+	return client.NewDgraphClient(api.NewDgraphClient(conn))
 }
 
 func (d *TestDgraph) MustAlter(t *testing.T, schema string) {
-	if err := d.client.Alter(context.Background(), &api.Operation{Schema: schema}); err != nil {
+	conn, err := d.Get()
+	if err != nil {
+		t.Fatalf("Failed to connect to Dgraph: %v", err)
+	}
+	defer conn.Close()
+	if err := d.getClient(conn).Alter(context.Background(), &api.Operation{Schema: schema}); err != nil {
 		t.Fatalf("Failed to alter test Dgraph: %v", err)
 	}
 }
@@ -71,18 +69,10 @@ func (d *TestDgraph) MustCleanup(t *testing.T) {
 }
 
 func (d *TestDgraph) Cleanup() error {
-	return d.client.Alter(context.Background(), &api.Operation{DropAll: true})
-}
-
-func (d *TestDgraph) MustClose() {
-	var errs []error
-	if err := d.Cleanup(); err != nil {
-		errs = append(errs, err)
+	conn, err := d.Get()
+	if err != nil {
+		return err
 	}
-	if err := d.conn.Close(); err != nil {
-		errs = append(errs, err)
-	}
-	if len(errs) > 0 {
-		log.Fatalf("Failed to close connection with test Dgraph: %v", errs)
-	}
+	defer conn.Close()
+	return d.getClient(conn).Alter(context.Background(), &api.Operation{DropAll: true})
 }
