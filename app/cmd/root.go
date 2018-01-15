@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"runtime"
+	"time"
 
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
@@ -38,6 +39,9 @@ func New(app component.App) *cobra.Command {
 				zapCfg.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 				zapCfg.DisableStacktrace = true
 				zapCfg.DisableCaller = true
+				zapCfg.EncoderConfig.EncodeTime = func(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
+					enc.AppendString(t.Local().Format("2006-01-02 15:04:05 MST"))
+				}
 				zapCfg.Level = zap.NewAtomicLevelAt(zapcore.InfoLevel)
 			}
 			if len(zapCfg.Encoding) != 0 {
