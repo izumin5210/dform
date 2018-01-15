@@ -15,9 +15,11 @@ import (
 // New creates a new command object
 func New(app component.App) *cobra.Command {
 	rootCmd := &cobra.Command{
-		Use:   app.Config().Name,
-		Short: "CLI tool to manage Dgraph schema",
-		Long:  "CLI tool to manage Dgraph schema",
+		Use:           app.Config().Name,
+		Short:         "CLI tool to manage Dgraph schema",
+		Long:          "CLI tool to manage Dgraph schema",
+		SilenceUsage:  true,
+		SilenceErrors: true,
 		PersistentPreRunE: func(*cobra.Command, []string) error {
 			// initialize logger
 			if app.Config().Debug {
