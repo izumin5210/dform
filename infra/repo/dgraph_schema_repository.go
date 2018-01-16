@@ -2,7 +2,6 @@ package repo
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"github.com/dgraph-io/dgraph/client"
@@ -64,5 +63,45 @@ func (r *dgraphSchemaRepository) GetSchema(ctx context.Context) (*schema.Schema,
 }
 
 func (r *dgraphSchemaRepository) Update(ctx context.Context, diff *schema.Diff) error {
-	return errors.New("not yet implemented")
+	alteredPreds := make([]*schema.PredicateSchema, 0, len(diff.Inserted)+len(diff.Modified))
+	droppedPreds := make([]*schema.PredicateSchema, 0, len(diff.Deleted))
+
+	for _, pred := range diff.Inserted {
+		alteredPreds = append(alteredPreds, pred)
+	}
+	for _, pair := range diff.Modified {
+		alteredPreds = append(alteredPreds, pair.To)
+	}
+	for _, pred := range diff.Deleted {
+		droppedPreds = append(droppedPreds, pred)
+	}
+
+	if len(alteredPreds)+len(droppedPreds) == 0 {
+		return nil
+	}
+
+	conn, err := r.pool.Get()
+	if err != nil {
+		return fmt.Errorf("failed to connect to Dgraph: %v", err)
+	}
+	defer conn.Close()
+
+	dgraph := client.NewDgraphClient(api.NewDgraphClient(conn))
+
+	q, err := (&schema.Schema{Predicates: alteredPreds}).MarshalText()
+	if err != nil {
+		return fmt.Errorf("failed to marshal schema: %v", err)
+	}
+	err = dgraph.Alter(ctx, &api.Operation{Schema: string(q)})
+	if err != nil {
+		return fmt.Errorf("failed to alter schema: %v", err)
+	}
+	for _, pred := range diff.Deleted {
+		err := dgraph.Alter(ctx, &api.Operation{DropAttr: pred.Name})
+		if err != nil {
+			return fmt.Errorf("failed to alter schema: %v", err)
+		}
+	}
+
+	return nil
 }
