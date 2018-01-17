@@ -2,6 +2,7 @@ package system
 
 import (
 	"fmt"
+	"io"
 	"strings"
 
 	"github.com/spf13/viper"
@@ -24,16 +25,25 @@ type Config struct {
 	ConfigFilePath          string
 	SchemaFilePath          string
 	Debug, Verbose          bool
+	InReader                io.Reader
+	OutWriter, ErrWriter    io.Writer
 	viper                   *viper.Viper
 }
 
 // NewConfig creates new Config object.
-func NewConfig(name, version, revision string) *Config {
+func NewConfig(
+	name, version, revision string,
+	inReader io.Reader,
+	outWriter, errWriter io.Writer,
+) *Config {
 	return &Config{
-		Name:     name,
-		Version:  version,
-		Revision: revision,
-		viper:    viper.New(),
+		Name:      name,
+		Version:   version,
+		Revision:  revision,
+		InReader:  inReader,
+		OutWriter: outWriter,
+		ErrWriter: errWriter,
+		viper:     viper.New(),
 	}
 }
 

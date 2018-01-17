@@ -9,6 +9,7 @@ type App interface {
 	Dgraph
 	File
 	Config() *system.Config
+	UI() system.UI
 }
 
 // New creates a new app.
@@ -28,4 +29,12 @@ type app struct {
 
 func (a *app) Config() *system.Config {
 	return a.config
+}
+
+func (a *app) UI() system.UI {
+	return system.NewUI(
+		a.config.InReader,
+		a.config.OutWriter,
+		a.config.ErrWriter,
+	)
 }
