@@ -15,6 +15,7 @@ type UI interface {
 }
 
 type ui struct {
+	in  io.Reader
 	out io.Writer
 	err io.Writer
 }
@@ -25,8 +26,9 @@ var (
 )
 
 // NewUI creates new UI object.
-func NewUI(out, err io.Writer) UI {
+func NewUI(in io.Reader, out, err io.Writer) UI {
 	return &ui{
+		in:  in,
 		out: out,
 		err: err,
 	}
