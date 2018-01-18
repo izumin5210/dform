@@ -97,11 +97,7 @@ func Test_ShowSchemaDiff(t *testing.T) {
 				fakeOutput: func(msg string) { outputs = append(outputs, msg) },
 			}
 
-			svc := &showSchemaDiffService{
-				repo1: repo1,
-				repo2: repo2,
-				ui:    ui,
-			}
+			svc := NewShowSchemaDiffService(repo1, repo2, ui)
 
 			err := svc.Perform(context.Background())
 
