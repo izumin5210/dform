@@ -1,4 +1,4 @@
-package component
+package di
 
 import (
 	"github.com/izumin5210/dform/app/system"
@@ -6,6 +6,8 @@ import (
 
 // App contains dependencies for this app.
 type App interface {
+	System
+	Dgraph
 	Service
 }
 
@@ -20,10 +22,14 @@ func New(config *system.Config) App {
 		fileComponent,
 	)
 	return &app{
+		System:  systemComponent,
+		Dgraph:  dgraphComponent,
 		Service: serviceComponent,
 	}
 }
 
 type app struct {
+	System
+	Dgraph
 	Service
 }

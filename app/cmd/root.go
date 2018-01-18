@@ -9,12 +9,12 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
-	"github.com/izumin5210/dform/app/component"
+	"github.com/izumin5210/dform/app/di"
 	"github.com/izumin5210/dform/util/log"
 )
 
 // New creates a new command object
-func New(app component.App) *cobra.Command {
+func New(app di.App) *cobra.Command {
 	rootCmd := &cobra.Command{
 		Use:           app.Config().Name,
 		Short:         "CLI tool to manage Dgraph schema",

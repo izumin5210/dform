@@ -5,11 +5,11 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/izumin5210/dform/app/component"
+	"github.com/izumin5210/dform/app/di"
 	"github.com/izumin5210/dform/util/log"
 )
 
-func newExportCommand(app component.App) *cobra.Command {
+func newExportCommand(app di.App) *cobra.Command {
 	return &cobra.Command{
 		Use:   "export",
 		Short: "Export schema information",

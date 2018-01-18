@@ -1,4 +1,4 @@
-package component
+package di
 
 import (
 	"github.com/izumin5210/dform/domain/schema"

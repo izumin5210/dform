@@ -1,10 +1,10 @@
-package component
+package di
 
 import (
-	"github.com/izumin5210/dform/infra/repo"
 	"github.com/spf13/afero"
 
 	"github.com/izumin5210/dform/domain/schema"
+	"github.com/izumin5210/dform/infra/repo"
 )
 
 // File containes dependencies for accessing to local filesystem.

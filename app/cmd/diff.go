@@ -5,10 +5,10 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/izumin5210/dform/app/component"
+	"github.com/izumin5210/dform/app/di"
 )
 
-func newDiffCommand(app component.App) *cobra.Command {
+func newDiffCommand(app di.App) *cobra.Command {
 	return &cobra.Command{
 		Use:   "diff",
 		Short: "Diff schema",
