@@ -40,7 +40,7 @@ func Test_ShowSchemaDiff(t *testing.T) {
 				Predicates: []*schema.PredicateSchema{predPred, predLogin},
 			},
 			outputs: [][]string{
-				[]string{predLogin.String()},
+				{predLogin.String()},
 			},
 		},
 		{
@@ -52,7 +52,7 @@ func Test_ShowSchemaDiff(t *testing.T) {
 				Predicates: []*schema.PredicateSchema{predPred},
 			},
 			outputs: [][]string{
-				[]string{predLogin.String()},
+				{predLogin.String()},
 			},
 		},
 		{
@@ -64,7 +64,7 @@ func Test_ShowSchemaDiff(t *testing.T) {
 				Predicates: []*schema.PredicateSchema{predPred, predFriend2},
 			},
 			outputs: [][]string{
-				[]string{predFriend1.String(), predFriend2.String()},
+				{predFriend1.String(), predFriend2.String()},
 			},
 		},
 		{
@@ -76,9 +76,9 @@ func Test_ShowSchemaDiff(t *testing.T) {
 				Predicates: []*schema.PredicateSchema{predPred, predLogin, predUserID, predFriend2},
 			},
 			outputs: [][]string{
-				[]string{predLogin.String(), predUserID.String()},
-				[]string{predCreatedAt.String()},
-				[]string{predFriend1.String(), predFriend2.String()},
+				{predLogin.String(), predUserID.String()},
+				{predCreatedAt.String()},
+				{predFriend1.String(), predFriend2.String()},
 			},
 		},
 	}
