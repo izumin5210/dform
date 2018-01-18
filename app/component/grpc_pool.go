@@ -1,7 +1,6 @@
 package component
 
 import (
-	"github.com/izumin5210/dform/app/system"
 	"github.com/izumin5210/dform/infra/repo"
 )
 
@@ -10,20 +9,20 @@ type Grpc interface {
 	GetDgraphPool() repo.GrpcPool
 }
 
-func newGrpc(config *system.Config) Grpc {
+func newGrpc(system System) Grpc {
 	return &grpc{
-		config: config,
+		System: system,
 	}
 }
 
 type grpc struct {
-	config *system.Config
-	pool   repo.GrpcPool
+	System
+	pool repo.GrpcPool
 }
 
 func (g *grpc) GetDgraphPool() repo.GrpcPool {
 	if g.pool == nil {
-		g.pool = repo.NewGrpcPool(g.config.GetDgraphURL())
+		g.pool = repo.NewGrpcPool(g.Config().GetDgraphURL())
 	}
 	return g.pool
 }

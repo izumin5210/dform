@@ -6,35 +6,24 @@ import (
 
 // App contains dependencies for this app.
 type App interface {
-	Dgraph
-	File
-	Config() *system.Config
-	UI() system.UI
+	Service
 }
 
 // New creates a new app.
 func New(config *system.Config) App {
+	systemComponent := newSystem(config)
+	dgraphComponent := newDgraph(systemComponent)
+	fileComponent := newFile(systemComponent)
+	serviceComponent := newService(
+		systemComponent,
+		dgraphComponent,
+		fileComponent,
+	)
 	return &app{
-		Dgraph: newDgraph(config),
-		File:   newFile(config),
-		config: config,
+		Service: serviceComponent,
 	}
 }
 
 type app struct {
-	Dgraph
-	File
-	config *system.Config
-}
-
-func (a *app) Config() *system.Config {
-	return a.config
-}
-
-func (a *app) UI() system.UI {
-	return system.NewUI(
-		a.config.InReader,
-		a.config.OutWriter,
-		a.config.ErrWriter,
-	)
+	Service
 }

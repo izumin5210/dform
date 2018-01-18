@@ -1,7 +1,6 @@
 package component
 
 import (
-	"github.com/izumin5210/dform/app/system"
 	"github.com/izumin5210/dform/domain/schema"
 	"github.com/izumin5210/dform/infra/repo"
 )
@@ -11,9 +10,9 @@ type Dgraph interface {
 	DgraphSchemaRepository() schema.Repository
 }
 
-func newDgraph(config *system.Config) Dgraph {
+func newDgraph(system System) Dgraph {
 	return &dgraph{
-		Grpc: newGrpc(config),
+		Grpc: newGrpc(system),
 	}
 }
 
