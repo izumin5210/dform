@@ -8,7 +8,7 @@ import (
 	"github.com/izumin5210/dform/app/di"
 )
 
-func newVersionCommand(app di.App) *cobra.Command {
+func newVersionCommand(app di.RootComponent) *cobra.Command {
 	return &cobra.Command{
 		Use:   "version",
 		Short: "Print version information",

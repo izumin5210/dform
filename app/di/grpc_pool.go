@@ -4,23 +4,23 @@ import (
 	"github.com/izumin5210/dform/infra/repo"
 )
 
-// Grpc contains GrpcPool instances
-type Grpc interface {
+// GrpcComponent contains GrpcPool instances
+type GrpcComponent interface {
 	GetDgraphPool() repo.GrpcPool
 }
 
-func newGrpc(system System) Grpc {
-	return &grpc{
-		System: system,
+func newGrpc(system SystemComponent) GrpcComponent {
+	return &grpcComponent{
+		SystemComponent: system,
 	}
 }
 
-type grpc struct {
-	System
+type grpcComponent struct {
+	SystemComponent
 	pool repo.GrpcPool
 }
 
-func (g *grpc) GetDgraphPool() repo.GrpcPool {
+func (g *grpcComponent) GetDgraphPool() repo.GrpcPool {
 	if g.pool == nil {
 		g.pool = repo.NewGrpcPool(g.Config().GetDgraphURL())
 	}

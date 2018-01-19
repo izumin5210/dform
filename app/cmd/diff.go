@@ -8,7 +8,7 @@ import (
 	"github.com/izumin5210/dform/app/di"
 )
 
-func newDiffCommand(app di.App) *cobra.Command {
+func newDiffCommand(app di.RootComponent) *cobra.Command {
 	return &cobra.Command{
 		Use:   "diff",
 		Short: "Diff schema",

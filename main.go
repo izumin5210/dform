@@ -37,8 +37,8 @@ func run() int {
 		outWriter,
 		errWriter,
 	)
-	app := di.New(config)
-	c := cmd.New(app)
+	rootComponent := di.New(config)
+	c := cmd.New(rootComponent)
 	err := c.Execute()
 	if err != nil {
 		log.Error("failed to execute command", "error", err)

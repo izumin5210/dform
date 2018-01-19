@@ -2,13 +2,13 @@ package di
 
 import "github.com/izumin5210/dform/app/system"
 
-// System provides accessors for moodules in system package.
-type System interface {
+// SystemComponent provides accessors for moodules in system package.
+type SystemComponent interface {
 	Config() *system.Config
 	UI() system.UI
 }
 
-func newSystem(config *system.Config) System {
+func newSystem(config *system.Config) SystemComponent {
 	return &systemComponent{
 		config: config,
 	}

@@ -9,7 +9,7 @@ import (
 	"github.com/izumin5210/dform/util/log"
 )
 
-func newExportCommand(app di.App) *cobra.Command {
+func newExportCommand(app di.RootComponent) *cobra.Command {
 	return &cobra.Command{
 		Use:   "export",
 		Short: "Export schema information",

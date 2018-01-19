@@ -5,21 +5,21 @@ import (
 	"github.com/izumin5210/dform/infra/repo"
 )
 
-// Dgraph containes dependencies for accessing to Dgraph.
-type Dgraph interface {
+// DgraphComponent containes dependencies for accessing to Dgraph.
+type DgraphComponent interface {
 	DgraphSchemaRepository() schema.Repository
 }
 
-func newDgraph(system System) Dgraph {
-	return &dgraph{
-		Grpc: newGrpc(system),
+func newDgraph(system SystemComponent) DgraphComponent {
+	return &dgraphComponent{
+		GrpcComponent: newGrpc(system),
 	}
 }
 
-type dgraph struct {
-	Grpc
+type dgraphComponent struct {
+	GrpcComponent
 }
 
-func (d *dgraph) DgraphSchemaRepository() schema.Repository {
+func (d *dgraphComponent) DgraphSchemaRepository() schema.Repository {
 	return repo.NewDgraphSchemaRepository(d.GetDgraphPool())
 }

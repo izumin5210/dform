@@ -2,29 +2,29 @@ package di
 
 import "github.com/izumin5210/dform/app/service"
 
-// Service contains service implementations.
-type Service interface {
+// ServiceComponent contains service implementations.
+type ServiceComponent interface {
 	ShowSchemaDiffService() service.ShowSchemaDiffService
 }
 
-func newService(system System, dgraph Dgraph, file File) Service {
+func newService(system SystemComponent, dgraph DgraphComponent, file FileComponent) ServiceComponent {
 	return &serviceComponent{
-		System: system,
-		Dgraph: dgraph,
-		File:   file,
+		SystemComponent: system,
+		DgraphComponent: dgraph,
+		FileComponent:   file,
 	}
 }
 
 type serviceComponent struct {
-	System
-	Dgraph
-	File
+	SystemComponent
+	DgraphComponent
+	FileComponent
 }
 
 func (c *serviceComponent) ShowSchemaDiffService() service.ShowSchemaDiffService {
 	return service.NewShowSchemaDiffService(
-		c.Dgraph.DgraphSchemaRepository(),
-		c.File.FileSchemaRepository(),
-		c.System.UI(),
+		c.DgraphSchemaRepository(),
+		c.FileSchemaRepository(),
+		c.UI(),
 	)
 }
