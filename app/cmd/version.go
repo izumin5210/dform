@@ -5,10 +5,10 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/izumin5210/dform/app/component"
+	"github.com/izumin5210/dform/app/di"
 )
 
-func newVersionCommand(app component.App) *cobra.Command {
+func newVersionCommand(app di.App) *cobra.Command {
 	return &cobra.Command{
 		Use:   "version",
 		Short: "Print version information",
