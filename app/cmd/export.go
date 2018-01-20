@@ -9,13 +9,13 @@ import (
 	"github.com/izumin5210/dform/util/log"
 )
 
-func newExportCommand(app di.RootComponent) *cobra.Command {
+func newExportCommand(component di.RootComponent) *cobra.Command {
 	return &cobra.Command{
 		Use:   "export",
 		Short: "Export schema information",
 		Long:  "Export schema information",
 		RunE: func(c *cobra.Command, _ []string) error {
-			repo := app.DgraphSchemaRepository()
+			repo := component.DgraphSchemaRepository()
 			s, err := repo.GetSchema(context.Background())
 			if err != nil {
 				log.Error("failed to get schema", "error", err)
