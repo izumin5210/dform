@@ -12,6 +12,7 @@ type UI interface {
 	Output(string)
 	Warn(string)
 	Error(string)
+	Confirm(string) (bool, error)
 }
 
 type uiImpl struct {
@@ -44,4 +45,8 @@ func (i *uiImpl) Warn(msg string) {
 
 func (i *uiImpl) Error(msg string) {
 	fprintlnError(i.err, msg)
+}
+
+func (i *uiImpl) Confirm(msg string) (bool, error) {
+	return false, nil
 }
