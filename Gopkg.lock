@@ -218,6 +218,12 @@
   version = "v1.0.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/tcnksm/go-input"
+  packages = ["."]
+  revision = "bbe13e92fa7dda71a4e012e3f427df11866c7651"
+
+[[projects]]
   name = "github.com/tebeka/snowball"
   packages = ["."]
   revision = "16e884df4e19660c5d3f61cf70d4a38c9eb1bae4"
@@ -250,7 +256,7 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
-  packages = ["bcrypt","blowfish"]
+  packages = ["bcrypt","blowfish","ssh/terminal"]
   revision = "13931e22f9e72ea58bb73048bc752b48c6d4d4ac"
 
 [[projects]]
@@ -262,7 +268,7 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
-  packages = ["unix"]
+  packages = ["unix","windows"]
   revision = "1792d66dc88e503d3cb2400578221cdf1f7fe26f"
 
 [[projects]]
@@ -292,6 +298,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "df6b1a53723fe3dd1cf947ab32d77c78728846adc086e534c1221c4855eff3de"
+  inputs-digest = "e75944f8c3f971be735e5640957aba663f3c486e001af049593a540dff9626d9"
   solver-name = "gps-cdcl"
   solver-version = 1
