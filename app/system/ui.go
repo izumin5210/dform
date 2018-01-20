@@ -14,7 +14,7 @@ type UI interface {
 	Error(string)
 }
 
-type ui struct {
+type uiImpl struct {
 	in  io.Reader
 	out io.Writer
 	err io.Writer
@@ -27,21 +27,21 @@ var (
 
 // NewUI creates new UI object.
 func NewUI(in io.Reader, out, err io.Writer) UI {
-	return &ui{
+	return &uiImpl{
 		in:  in,
 		out: out,
 		err: err,
 	}
 }
 
-func (i *ui) Output(msg string) {
+func (i *uiImpl) Output(msg string) {
 	fmt.Fprintln(i.out, msg)
 }
 
-func (i *ui) Warn(msg string) {
+func (i *uiImpl) Warn(msg string) {
 	fprintlnWarn(i.err, msg)
 }
 
-func (i *ui) Error(msg string) {
+func (i *uiImpl) Error(msg string) {
 	fprintlnError(i.err, msg)
 }
