@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/izumin5210/dform/app/cmd"
-	"github.com/izumin5210/dform/app/component"
+	"github.com/izumin5210/dform/app/di"
 	"github.com/izumin5210/dform/app/system"
 	"github.com/izumin5210/dform/util/log"
 )
@@ -37,8 +37,8 @@ func run() int {
 		outWriter,
 		errWriter,
 	)
-	app := component.New(config)
-	c := cmd.New(app)
+	rootComponent := di.New(config)
+	c := cmd.New(rootComponent)
 	err := c.Execute()
 	if err != nil {
 		log.Error("failed to execute command", "error", err)

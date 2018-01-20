@@ -9,14 +9,14 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
-	"github.com/izumin5210/dform/app/component"
+	"github.com/izumin5210/dform/app/di"
 	"github.com/izumin5210/dform/util/log"
 )
 
 // New creates a new command object
-func New(app component.App) *cobra.Command {
+func New(component di.RootComponent) *cobra.Command {
 	rootCmd := &cobra.Command{
-		Use:           app.Config().Name,
+		Use:           component.Config().Name,
 		Short:         "CLI tool to manage Dgraph schema",
 		Long:          "CLI tool to manage Dgraph schema",
 		SilenceUsage:  true,
@@ -24,17 +24,17 @@ func New(app component.App) *cobra.Command {
 		PersistentPreRunE: func(*cobra.Command, []string) error {
 			// initialize logger
 			var zapCfg zap.Config
-			if app.Config().Debug {
+			if component.Config().Debug {
 				zapCfg = zap.NewProductionConfig()
 				zapCfg.Level = zap.NewAtomicLevelAt(zapcore.DebugLevel)
 				zapCfg.InitialFields = map[string]interface{}{
-					"version":         app.Config().Version,
-					"revision":        app.Config().Revision,
+					"version":         component.Config().Version,
+					"revision":        component.Config().Revision,
 					"runtime_version": runtime.Version(),
 					"goos":            runtime.GOOS,
 					"goarch":          runtime.GOARCH,
 				}
-			} else if app.Config().Verbose {
+			} else if component.Config().Verbose {
 				zapCfg = zap.NewDevelopmentConfig()
 				zapCfg.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 				zapCfg.DisableStacktrace = true
@@ -55,22 +55,22 @@ func New(app component.App) *cobra.Command {
 		},
 	}
 
-	cobra.OnInitialize(app.Config().Init)
+	cobra.OnInitialize(component.Config().Init)
 
 	rootCmd.PersistentFlags().StringVar(
-		&(app.Config().ConfigFilePath),
+		&(component.Config().ConfigFilePath),
 		"config",
 		"",
-		fmt.Sprintf("config file (default is $PWD/%s.toml)", app.Config().GetDefaultConfigName()),
+		fmt.Sprintf("config file (default is $PWD/%s.toml)", component.Config().GetDefaultConfigName()),
 	)
 	rootCmd.PersistentFlags().BoolVar(
-		&(app.Config().Debug),
+		&(component.Config().Debug),
 		"debug",
 		false,
 		fmt.Sprintf("Debug level output"),
 	)
 	rootCmd.PersistentFlags().BoolVarP(
-		&(app.Config().Verbose),
+		&(component.Config().Verbose),
 		"verbose",
 		"v",
 		false,
@@ -78,9 +78,9 @@ func New(app component.App) *cobra.Command {
 	)
 
 	rootCmd.AddCommand(
-		newDiffCommand(app),
-		newExportCommand(app),
-		newVersionCommand(app),
+		newDiffCommand(component),
+		newExportCommand(component),
+		newVersionCommand(component),
 	)
 
 	return rootCmd
