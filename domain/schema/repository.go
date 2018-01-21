@@ -7,4 +7,5 @@ import (
 // Repository is an interface for operating Dgraph schema.
 type Repository interface {
 	GetSchema(context.Context) (*Schema, error)
+	Update(context.Context, *Diff) error
 }

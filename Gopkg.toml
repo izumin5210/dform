@@ -52,3 +52,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/tcnksm/go-input"
+
+[[constraint]]
+  branch = "master"
+  name = "golang.org/x/sync"

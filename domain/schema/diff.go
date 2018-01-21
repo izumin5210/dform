@@ -44,3 +44,8 @@ func MakeDiff(s1, s2 *Schema) *Diff {
 
 	return diff
 }
+
+// Empty returned true if the diff has no insertions, deletions and modifications.
+func (d *Diff) Empty() bool {
+	return len(d.Inserted) == 0 && len(d.Deleted) == 0 && len(d.Modified) == 0
+}
