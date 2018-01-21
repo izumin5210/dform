@@ -125,10 +125,15 @@ func Test_ShowSchemaDiff(t *testing.T) {
 type fakeSchemaRepo struct {
 	schema.Repository
 	fakeGetSchema func(context.Context) (*schema.Schema, error)
+	fakeUpdate    func(context.Context, *schema.Diff) error
 }
 
 func (f *fakeSchemaRepo) GetSchema(c context.Context) (*schema.Schema, error) {
 	return f.fakeGetSchema(c)
+}
+
+func (f *fakeSchemaRepo) Update(c context.Context, diff *schema.Diff) error {
+	return f.fakeUpdate(c, diff)
 }
 
 type fakeUI struct {

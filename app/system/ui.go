@@ -6,6 +6,8 @@ import (
 
 	"github.com/fatih/color"
 	input "github.com/tcnksm/go-input"
+
+	"github.com/izumin5210/dform/util/log"
 )
 
 // UI is an interface to abstract interactions with users.
@@ -54,9 +56,11 @@ func (i *uiImpl) Error(msg string) {
 }
 
 func (i *uiImpl) Confirm(msg string) (bool, error) {
-	ans, err := i.inputUI.Ask(msg, &input.Options{
-		Loop: true,
+	ans, err := i.inputUI.Ask(fmt.Sprintf("%s [Y/n]", msg), &input.Options{
+		HideOrder: true,
+		Loop:      true,
 		ValidateFunc: func(ans string) error {
+			log.Debug("receive user input", "query", msg, "input", ans)
 			if ans != "Y" && ans != "n" {
 				return fmt.Errorf("input must be Y or n")
 			}
