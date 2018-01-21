@@ -9,6 +9,7 @@ func Test_Diff(t *testing.T) {
 	cases := []struct {
 		s1, s2 *Schema
 		out    *Diff
+		empty  bool
 	}{
 		{
 			s1: &Schema{
@@ -21,7 +22,8 @@ func Test_Diff(t *testing.T) {
 					{Name: "_predicate_", Type: PredicateTypeString, List: true},
 				},
 			},
-			out: &Diff{},
+			out:   &Diff{},
+			empty: true,
 		},
 		{
 			s1: &Schema{
@@ -40,6 +42,7 @@ func Test_Diff(t *testing.T) {
 					{Name: "name", Type: PredicateTypeString, Index: true, Tokenizers: []string{"term"}},
 				},
 			},
+			empty: false,
 		},
 		{
 			s1: &Schema{
@@ -58,6 +61,7 @@ func Test_Diff(t *testing.T) {
 					{Name: "name", Type: PredicateTypeString, Index: true, Tokenizers: []string{"term"}},
 				},
 			},
+			empty: false,
 		},
 		{
 			s1: &Schema{
@@ -80,6 +84,7 @@ func Test_Diff(t *testing.T) {
 					},
 				},
 			},
+			empty: false,
 		},
 		{
 			s1: &Schema{
@@ -120,6 +125,7 @@ func Test_Diff(t *testing.T) {
 					},
 				},
 			},
+			empty: false,
 		},
 	}
 
@@ -128,6 +134,10 @@ func Test_Diff(t *testing.T) {
 
 		if got, want := diff, c.out; !reflect.DeepEqual(got, want) {
 			t.Errorf("Diff in %v and %v is %v, want %v", c.s1, c.s2, got, want)
+		}
+
+		if got, want := diff.Empty(), c.empty; got != want {
+			t.Errorf("Empty() returned %t, want %t", got, want)
 		}
 	}
 }
