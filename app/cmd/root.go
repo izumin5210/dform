@@ -78,7 +78,7 @@ func New(component di.RootComponent) *cobra.Command {
 	)
 
 	rootCmd.AddCommand(
-		newDiffCommand(component),
+		newApplyCommand(component),
 		newExportCommand(component),
 		newVersionCommand(component),
 	)

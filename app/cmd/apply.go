@@ -9,11 +9,11 @@ import (
 	"github.com/izumin5210/dform/util/log"
 )
 
-func newDiffCommand(component di.RootComponent) *cobra.Command {
+func newApplyCommand(component di.RootComponent) *cobra.Command {
 	return &cobra.Command{
-		Use:   "diff",
-		Short: "Diff schema",
-		Long:  "Diff schema",
+		Use:   "apply",
+		Short: "Apply schema",
+		Long:  "Apply schema",
 		RunE: func(c *cobra.Command, _ []string) error {
 			var err error
 			ctx := context.Background()

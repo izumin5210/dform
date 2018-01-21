@@ -11,11 +11,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func Test_Diff(t *testing.T) {
+func Test_Apply(t *testing.T) {
 	t.Run("when succeeded in applying", func(t *testing.T) {
 		var showCalled, applyCalled, confirmCalled bool
 
-		cmd := newTestDiffCommand(
+		cmd := newTestApplyCommand(
 			func(context.Context) error {
 				showCalled = true
 				return nil
@@ -52,7 +52,7 @@ func Test_Diff(t *testing.T) {
 	t.Run("when stop applying", func(t *testing.T) {
 		var showCalled, applyCalled, confirmCalled bool
 
-		cmd := newTestDiffCommand(
+		cmd := newTestApplyCommand(
 			func(context.Context) error {
 				showCalled = true
 				return nil
@@ -89,7 +89,7 @@ func Test_Diff(t *testing.T) {
 	t.Run("when failed to show diff", func(t *testing.T) {
 		var showCalled, applyCalled, confirmCalled bool
 
-		cmd := newTestDiffCommand(
+		cmd := newTestApplyCommand(
 			func(context.Context) error {
 				showCalled = true
 				return errors.New("an error")
@@ -126,7 +126,7 @@ func Test_Diff(t *testing.T) {
 	t.Run("when failed to confirm", func(t *testing.T) {
 		var showCalled, applyCalled, confirmCalled bool
 
-		cmd := newTestDiffCommand(
+		cmd := newTestApplyCommand(
 			func(context.Context) error {
 				showCalled = true
 				return nil
@@ -163,7 +163,7 @@ func Test_Diff(t *testing.T) {
 	t.Run("when failed to apply diff", func(t *testing.T) {
 		var showCalled, applyCalled, confirmCalled bool
 
-		cmd := newTestDiffCommand(
+		cmd := newTestApplyCommand(
 			func(context.Context) error {
 				showCalled = true
 				return nil
@@ -200,7 +200,7 @@ func Test_Diff(t *testing.T) {
 
 // Fake implementations
 //================================================================
-func newTestDiffCommand(
+func newTestApplyCommand(
 	fakeShow func(context.Context) error,
 	fakeApply func(context.Context) error,
 	fakeConfirm func(string) (bool, error),
@@ -222,7 +222,7 @@ func newTestDiffCommand(
 			}
 		},
 	}
-	return newDiffCommand(component)
+	return newApplyCommand(component)
 }
 
 type fakeRootComponent struct {
