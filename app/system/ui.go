@@ -5,6 +5,7 @@ import (
 	"io"
 
 	"github.com/fatih/color"
+	input "github.com/tcnksm/go-input"
 )
 
 // UI is an interface to abstract interactions with users.
@@ -16,9 +17,10 @@ type UI interface {
 }
 
 type uiImpl struct {
-	in  io.Reader
-	out io.Writer
-	err io.Writer
+	in      io.Reader
+	out     io.Writer
+	err     io.Writer
+	inputUI *input.UI
 }
 
 var (
@@ -32,6 +34,10 @@ func NewUI(in io.Reader, out, err io.Writer) UI {
 		in:  in,
 		out: out,
 		err: err,
+		inputUI: &input.UI{
+			Reader: in,
+			Writer: out,
+		},
 	}
 }
 
@@ -48,5 +54,17 @@ func (i *uiImpl) Error(msg string) {
 }
 
 func (i *uiImpl) Confirm(msg string) (bool, error) {
-	return false, nil
+	ans, err := i.inputUI.Ask(msg, &input.Options{
+		Loop: true,
+		ValidateFunc: func(ans string) error {
+			if ans != "Y" && ans != "n" {
+				return fmt.Errorf("input must be Y or n")
+			}
+			return nil
+		},
+	})
+	if err != nil {
+		return false, err
+	}
+	return ans == "Y", nil
 }
