@@ -48,3 +48,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/grpc-ecosystem/go-grpc-middleware"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/tcnksm/go-input"
