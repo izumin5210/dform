@@ -18,6 +18,7 @@ func newExportCommand(component di.RootComponent) *cobra.Command {
 			repo := component.DgraphSchemaRepository()
 			s, err := repo.GetSchema(context.Background())
 			if err != nil {
+				component.UI().Error("Failed to get schema diff")
 				log.Error("failed to get schema", "error", err)
 				return err
 			}
@@ -26,7 +27,7 @@ func newExportCommand(component di.RootComponent) *cobra.Command {
 				log.Error("failed to marshal schema", "error", err)
 				return err
 			}
-			c.Println(string(data))
+			component.UI().Output(string(data))
 			return nil
 		},
 	}

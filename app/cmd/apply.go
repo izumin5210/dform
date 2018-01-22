@@ -20,12 +20,14 @@ func newApplyCommand(component di.RootComponent) *cobra.Command {
 
 			err = component.ShowSchemaDiffService().Perform(ctx)
 			if err != nil {
+				component.UI().Error("Failed to get schema diff")
 				log.Error("failed to show schema diff", "error", err)
 				return err
 			}
 
 			ok, err := component.UI().Confirm("Would you like to apply it?")
 			if err != nil {
+				component.UI().Error("Failed to confirm to apply")
 				log.Error("failed to confirm to apply", "error", err)
 				return err
 			}
@@ -33,6 +35,7 @@ func newApplyCommand(component di.RootComponent) *cobra.Command {
 			if ok {
 				err = component.ApplySchemaDiffService().Perform(ctx)
 				if err != nil {
+					component.UI().Error("Failed to apply schema diff")
 					log.Error("failed to apply schema diff", "error", err)
 					return err
 				}
