@@ -268,3 +268,7 @@ type fakeUI struct {
 func (u *fakeUI) Confirm(msg string) (bool, error) {
 	return u.fakeConfirm(msg)
 }
+
+func (u *fakeUI) Error(msg string) {
+	// do nothing
+}

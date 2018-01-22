@@ -27,7 +27,7 @@ type uiImpl struct {
 
 var (
 	fprintlnWarn  = color.New(color.FgYellow).FprintlnFunc()
-	fprintlnError = color.New(color.FgYellow).FprintlnFunc()
+	fprintlnError = color.New(color.FgRed).FprintlnFunc()
 )
 
 // NewUI creates new UI object.
